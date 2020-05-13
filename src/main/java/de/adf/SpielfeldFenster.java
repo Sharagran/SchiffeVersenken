@@ -9,11 +9,6 @@ public class SpielfeldFenster extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-        constraints.insets = new Insets(0,0,10,0);
-        
-
-        getContentPane().add(new Spiel(), constraints);
+        this.setContentPane(new Spiel());
     }
 }
