@@ -4,40 +4,34 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 public class Spiel extends JPanel {
     public Spiel() {
+        setLayout(new GridLayout(10,10));
+        setBackground(Color.pink);
+        setPreferredSize(new Dimension(500,500));
 
-        Cell btnStart = new Cell();
-        add(btnStart);
+        generateBoard();
+    }
 
-
-        this.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent me) {
-                System.out.println(me.getPoint());
+    private void generateBoard() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                Cell cell = new Cell();
+                cell.setPreferredSize(new Dimension(32,32));
+                add(cell);
             }
-        });
-    }
-
-    public void paintComponent(Graphics g) {
-        drawGrid(32, 32);
-
-        g.setColor(Color.ORANGE);
-        g.fillRect(100, 100, 300, 150);
-    }
-
-    private void drawGrid(int width, int heigth) {
-        // g.setColor(Color.black);
-
-    }
-
-    private Point bekommePositionImRaster() {
-        return null;
+        }
     }
 
     private class Cell extends JButton {
+
+        Map<String, Color> colors = Map.of(
+            "background", Color.white,
+            "hit", Color.red.brighter(),
+            "stroke", new Color(218, 218, 255)
+
+
+        );
 
         public Cell() {
             super();
@@ -46,13 +40,12 @@ public class Spiel extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             Graphics2D g2 = (Graphics2D) g.create();
-            g2.setPaint(new GradientPaint(new Point(0, 0), Color.RED, new Point(0, getHeight()), Color.BLUE));
-            g2.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30);
-            g2.setPaint(Color.BLACK);
-            g2.drawString(getText(), 30, 12);
+            g2.setColor(new Color(249,250,252));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+            g2.setStroke(new BasicStroke(4));
+            g2.setColor(colors.get("stroke"));
+            g2.drawRect(0, 0, getWidth(), getHeight());
             g2.dispose();
-
-            // super.paintComponent(g);
         }
     }
 }

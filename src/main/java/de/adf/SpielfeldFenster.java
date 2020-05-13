@@ -9,6 +9,13 @@ public class SpielfeldFenster extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-        this.setContentPane(new Spiel());
+        setLayout(new BorderLayout());
+        add(new Spiel(), BorderLayout.CENTER);
+        JPanel right = new JPanel();
+        right.add(new JLabel("test"));
+        add(right, BorderLayout.EAST);
+        add(new JPanel(), BorderLayout.WEST);
+        validate();
+        repaint();
     }
 }
