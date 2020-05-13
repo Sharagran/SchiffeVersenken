@@ -10,7 +10,9 @@ public class EntdeckerMenue extends JFrame {
 
     public EntdeckerMenue() {
         initUI();
+        setVisible(true);
     }
+
     /**
      * initialisiere das Nutzerinterface.
      */
