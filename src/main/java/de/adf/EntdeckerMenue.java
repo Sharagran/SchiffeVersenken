@@ -8,13 +8,6 @@ import java.awt.*;
  */
 public class EntdeckerMenue extends JFrame {
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            EntdeckerMenue ex = new EntdeckerMenue();
-            ex.setVisible(true);
-        });
-    }
-
     public EntdeckerMenue() {
         initUI();
     }
