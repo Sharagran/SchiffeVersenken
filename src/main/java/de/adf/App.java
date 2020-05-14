@@ -15,6 +15,6 @@ public final class App {
         System.out.println("Hello World!");
         //new Hauptmenue();
         //new SpielfeldFenster();
-        new LobbyWindow();
+        //new LobbyWindow();
     }
 }
