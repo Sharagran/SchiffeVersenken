@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * EntdeckerMenue
+ * LobbyWindow
  */
 public class LobbyWindow extends JFrame {
 

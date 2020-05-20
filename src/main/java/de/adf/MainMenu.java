@@ -1,12 +1,12 @@
 package de.adf;
 import java.awt.*;
 import javax.swing.*;
-public class Hauptmenue extends JFrame {
+public class MainMenu extends JFrame {
     
     /**
      * Erzeugt das Hauptmenü des Spiels, mit allen Buttons.
      */
-    public Hauptmenue() {
+    public MainMenu() {
         setTitle("Schiffe versenken");
         GridBagConstraints constraints = new GridBagConstraints();
         setLayout(new GridBagLayout());
@@ -21,11 +21,11 @@ public class Hauptmenue extends JFrame {
         constraints.gridy = 0;
         getContentPane().add(btnStart, constraints);
 
-        JButton btnBeenden = new JButton("Beenden");
+        JButton btnExit = new JButton("Beenden");
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 1;
-        getContentPane().add(btnBeenden, constraints);
+        getContentPane().add(btnExit, constraints);
     }
     
 
