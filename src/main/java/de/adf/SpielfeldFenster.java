@@ -15,6 +15,7 @@ public class SpielfeldFenster extends JFrame {
         right.add(new JLabel("test"));
         add(right, BorderLayout.EAST);
         add(new JPanel(), BorderLayout.WEST);
+        
         validate();
         repaint();
     }
