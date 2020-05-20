@@ -2,14 +2,15 @@ package de.adf;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.NetworkInterface;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 /**
  * EntdeckerMenue
@@ -91,8 +92,43 @@ public class LobbyWindow extends JFrame {
     }
 
     private void refreshList(ActionEvent e) {
-        ip_ListModel.addElement("127.0.0.1");
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            System.out.println(inetAddress.getLocalHost());
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        String ip = "192.168.178.3";
+        if(serverListening(ip, 80)){
+            ip_ListModel.addElement(ip);
+            System.out.println(true);
+        }
     }
+
+    public boolean serverListening(String host, int port)
+    {
+        Socket s = null;
+        try
+        {
+            s = new Socket(host, port);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        finally
+        {
+            if(s != null) {
+                try {
+                    s.close();
+                }
+                catch(Exception e){
+
+                }
+            } 
+        }
+    }  
 
     private void joinClicked(ActionEvent e) {
         String ip = ip_text.getText();
