@@ -48,6 +48,10 @@ public class Spiel extends JPanel {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g.create();
+            
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+
             g2.setColor(colors.get("background"));
             g2.fillRect(0, 0, getWidth(), getHeight());
             g2.setStroke(new BasicStroke(4));
@@ -63,6 +67,7 @@ public class Spiel extends JPanel {
                 g2.drawLine(0, 0, this.getWidth(), this.getHeight());
                 g2.drawLine(0, this.getHeight(), this.getWidth(), 0);
             }
+
 
             g2.dispose();
         }
