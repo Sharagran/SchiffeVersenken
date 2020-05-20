@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
@@ -95,12 +96,17 @@ public class LobbyWindow extends JFrame {
         try {
             String hostip = InetAddress.getLocalHost().getHostAddress();
             hostip = hostip.substring(0, hostip.lastIndexOf('.') + 1);
-            System.out.println(hostip);
 
-            if(serverListening(hostip, 80)) {
-                ip_ListModel.addElement(hostip);
-                System.out.println(true);
+            for (int i = 1; i <= 254; i++) {
+                String currentIP = hostip.concat(Integer.toString(i));
+
+                if(serverListening(currentIP, 80)) {
+                    ip_ListModel.addElement(hostip);
+                    System.out.println(currentIP);
+                }
             }
+
+            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
