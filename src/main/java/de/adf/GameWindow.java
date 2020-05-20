@@ -9,12 +9,12 @@ public class GameWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
 
-        setLayout(new BorderLayout());
-        add(new GameBoard(), BorderLayout.CENTER);
-        JPanel right = new JPanel();
-        right.add(new JLabel("test"));
-        add(right, BorderLayout.EAST);
-        add(new JPanel(), BorderLayout.WEST);
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0, 50, 0, 50);
+
+        add(new GameBoard(), gbc);
+        add(new GameBoard(), gbc);
         
         validate();
         repaint();

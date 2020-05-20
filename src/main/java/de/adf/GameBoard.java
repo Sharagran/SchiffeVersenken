@@ -4,18 +4,36 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GameBoard extends JPanel {
     public GameBoard() {
-        setLayout(new GridLayout(10, 10));
+        setLayout(new GridLayout(11, 11));
         setPreferredSize(new Dimension(500, 500));
 
         generateBoard();
     }
 
     private void generateBoard() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        // Empty top left corner
+        JLabel empty = new JLabel();
+        add(empty);
+        for (int i = 1; i <= 10; i++) {
+            // Label Y axis (numbers)
+            JLabel number = new JLabel(Integer.toString(i));
+            number.setHorizontalAlignment(SwingConstants.CENTER);
+            add(number);
+        }
+        
+
+        for (int i = 1; i < 11; i++) {
+            // Label X axis (letters)
+            JLabel letter = new JLabel(Character.toString(i + 64));
+            letter.setVerticalAlignment(SwingConstants.CENTER);
+            add(letter);
+
+            // Cells
+            for (int j = 1; j < 11; j++) {
                 Cell cell = new Cell();
                 cell.setPreferredSize(new Dimension(32, 32));
                 add(cell);
@@ -25,10 +43,7 @@ public class GameBoard extends JPanel {
 
     private class Cell extends JButton {
 
-        private Map<String, Color> colors = Map.of(
-            "background", Color.white,
-            "hit", Color.red
-        );
+        private Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red);
 
         private boolean hasShip = Math.random() > 0.5;
         private boolean gotShot = false;
@@ -39,7 +54,7 @@ public class GameBoard extends JPanel {
 
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    gotShot = true; //FIXME: demo only
+                    gotShot = true; // FIXME: demo only
                 }
             });
         }
@@ -56,18 +71,17 @@ public class GameBoard extends JPanel {
             g2.fillRect(0, 0, getWidth(), getHeight());
             g2.setStroke(new BasicStroke(4));
 
-
             if (gotShot) {
                 g2.setColor(colors.get("hit"));
-                if(hasShip) {
+                if (hasShip) {
                     int padding = 10;
                     g2.drawLine(0 + padding, 0 + padding, getWidth() - padding, getHeight() - padding);
-                    g2.drawLine(0+ padding, getHeight() - padding, getWidth() - padding, 0 + padding);
+                    g2.drawLine(0 + padding, getHeight() - padding, getWidth() - padding, 0 + padding);
                 } else {
                     int size = 10;
                     g2.fillArc(getWidth() / 2 - size / 2, getHeight() / 2 - size / 2, size, size, 0, 360);
                 }
-                
+
             }
 
             g2.dispose();
