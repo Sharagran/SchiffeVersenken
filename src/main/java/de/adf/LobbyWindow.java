@@ -13,7 +13,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 /**
- * EntdeckerMenue
+ * LobbyWindow
  */
 public class LobbyWindow extends JFrame {
 
