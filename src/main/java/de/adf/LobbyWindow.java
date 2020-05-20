@@ -93,15 +93,16 @@ public class LobbyWindow extends JFrame {
 
     private void refreshList(ActionEvent e) {
         try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            System.out.println(inetAddress.getLocalHost());
+            String hostip = InetAddress.getLocalHost().getHostAddress();
+            hostip = hostip.substring(0, hostip.lastIndexOf('.') + 1);
+            System.out.println(hostip);
+
+            if(serverListening(hostip, 80)) {
+                ip_ListModel.addElement(hostip);
+                System.out.println(true);
+            }
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
-        }
-        String ip = "192.168.178.3";
-        if(serverListening(ip, 80)){
-            ip_ListModel.addElement(ip);
-            System.out.println(true);
         }
     }
 
