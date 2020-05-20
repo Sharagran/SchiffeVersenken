@@ -2,17 +2,20 @@ package de.adf;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 /**
- * EntdeckerMenue
+ * LobbyWindow
  */
 public class LobbyWindow extends JFrame {
 
@@ -91,8 +94,50 @@ public class LobbyWindow extends JFrame {
     }
 
     private void refreshList(ActionEvent e) {
-        ip_ListModel.addElement("127.0.0.1");
+        try {
+            String hostip = InetAddress.getLocalHost().getHostAddress();
+            hostip = hostip.substring(0, hostip.lastIndexOf('.') + 1);
+
+            for (int i = 1; i <= 254; i++) {
+                String currentIP = hostip.concat(Integer.toString(i));
+                if(serverListening(currentIP, 80)) {
+                    ip_ListModel.addElement(currentIP);
+                    System.out.println(currentIP);
+                }
+            }
+
+            
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
+
+    public boolean serverListening(String host, int port)
+    {
+        Socket s = null;
+        try
+        {
+            s = new Socket();
+            s.connect(new InetSocketAddress(host, port), 10);
+            s.close();
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+        finally
+        {
+            if(s != null) {
+                try {
+                    s.close();
+                }
+                catch(Exception e){
+
+                }
+            } 
+        }
+    }  
 
     private void joinClicked(ActionEvent e) {
         String ip = ip_text.getText();
