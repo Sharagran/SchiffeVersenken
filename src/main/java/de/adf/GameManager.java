@@ -1,6 +1,8 @@
 package de.adf;
 
 public class GameManager {
+    //TODO: change GameManager into Multiplayer interface
+    //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
 
     private int[][] boardPlayer1 = new int[10][10];
     private int[][] boardPlayer2 = new int[10][10];
