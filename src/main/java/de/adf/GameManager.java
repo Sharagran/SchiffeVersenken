@@ -1,20 +1,24 @@
 package de.adf;
 
 import java.rmi.*;
+import java.rmi.server.*;
 
 interface GameManagerInterface extends Remote {
     public boolean shoot(int x, int y) throws RemoteException;
     public boolean isLost() throws RemoteException;
 }
 
-public class GameManager {
+public class GameManager extends UnicastRemoteObject implements GameManagerInterface {
     //TODO: change GameManager into Multiplayer interface
     //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
 
     private int[][] myBoard = new int[10][10];
 
-    public GameManager() {
+    public GameManager(String ip) throws RemoteException {
         super();
+
+        System.setProperty("java.security.policy", "./java.policy");
+        System.setSecurityManager(new SecurityManager());
     }
 
     // leftmost x, topmost y
