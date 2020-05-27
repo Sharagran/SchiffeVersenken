@@ -12,6 +12,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
+import java.rmi.RemoteException;
 import java.util.Enumeration;
 
 /**
@@ -45,8 +46,6 @@ public class LobbyWindow extends JFrame {
         Container pane = getContentPane();
 
         ip_ListModel = new DefaultListModel();
-        ip_ListModel.addElement("placeholder");
-        ip_ListModel.addElement("placeholder");
 
         ip_text = new JTextField();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -72,7 +71,14 @@ public class LobbyWindow extends JFrame {
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.LAST_LINE_START;
         pane.add(host_btn, gbc);
-        host_btn.addActionListener(e -> hostClicked(e));
+        host_btn.addActionListener(e -> {
+            try {
+                hostClicked(e);
+            } catch (RemoteException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
 
         JButton refresh_btn = new JButton(Character.toString(128472));
         gbc.gridx = 1;
@@ -86,7 +92,14 @@ public class LobbyWindow extends JFrame {
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.LAST_LINE_END;
         pane.add(join_btn, gbc);
-        join_btn.addActionListener(e -> joinClicked(e));
+        join_btn.addActionListener(e -> {
+            try {
+                joinClicked(e);
+            } catch (RemoteException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        });
     }
 
     private void ListSelectionChanged(ListSelectionEvent e) {
@@ -139,11 +152,13 @@ public class LobbyWindow extends JFrame {
         }
     }  
 
-    private void joinClicked(ActionEvent e) {
+    private void joinClicked(ActionEvent e) throws RemoteException {
         String ip = ip_text.getText();
+        new GameManager(ip);
     }
 
-    private void hostClicked(ActionEvent e) {
-
+    private void hostClicked(ActionEvent e) throws RemoteException {
+        String ip = "127.0.0.1";
+        new GameManager(ip);
     }
 }
