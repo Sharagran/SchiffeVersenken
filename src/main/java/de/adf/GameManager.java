@@ -4,27 +4,21 @@ import java.rmi.*;
 
 interface GameManagerInterface extends Remote {
     public boolean shoot(int x, int y) throws RemoteException;
-    public int getWinner() throws RemoteException;
+    public boolean isLost() throws RemoteException;
 }
 
 public class GameManager {
     //TODO: change GameManager into Multiplayer interface
     //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
 
-    private int[][] boardPlayer1 = new int[10][10];
-    private int[][] boardPlayer2 = new int[10][10];
+    private int[][] myBoard = new int[10][10];
 
     public GameManager() {
         super();
     }
 
     // leftmost x, topmost y
-    public boolean placeShip(int targetBoard, int x, int y, int shipLenght, Boolean horizontal) throws Exception {
-        // Valid player board check
-        if(targetBoard != 1 || targetBoard != 2) {
-            throw new Exception("Invalid targetBoard");
-        }
-
+    public boolean placeShip(int x, int y, int shipLenght, Boolean horizontal) {
         // Out of bound check
         if(horizontal) {
             if(x + shipLenght >= 10)
@@ -36,7 +30,7 @@ public class GameManager {
 
         // place parts
         for (int i = 0; i < shipLenght; i++) {
-            placeShipPart(targetBoard, x, y);
+            placeShipPart(x, y);
 
             if(horizontal)
                 x++;
@@ -48,42 +42,27 @@ public class GameManager {
         return true;
     }
 
-    public void shoot(int targetBoard, int x, int y) throws Exception {
-        if(targetBoard == 1) {
-            boardPlayer1[x][y] = 0;
-        } else if (targetBoard == 2) {
-            boardPlayer2[x][y] = 0;
-        } else {
-            throw new Exception("Invalid targetBoard");
-        }
+    // Remote methode
+    public boolean shoot(int x, int y) throws RemoteException {
+        boolean shipHit = myBoard[x][y] == 1;
+        myBoard[x][y] = 0;
+        return shipHit;
     }
 
-    private void placeShipPart(int targetBoard, int x, int y) {
-        if(targetBoard == 1) {
-            boardPlayer1[x][y] = 1;
-        } else if (targetBoard == 2) {
-            boardPlayer2[x][y] = 1;
-        }
+    private void placeShipPart(int x, int y) {
+        myBoard[x][y] = 1;
     }
 
-    public int getWinner() {
-        int shipcountPlayer1 = 0;
-        int shipcountPlayer2 = 0;
-
+    // Remote methode
+    public boolean isLost() throws RemoteException {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
-                shipcountPlayer1 += boardPlayer1[i][j];
-                shipcountPlayer2 += boardPlayer2[i][j];
+                if(myBoard[i][j] == 1)
+                    return false;   //Schiff gefunden = noch nicht verloren
             }
         }
 
-        if (shipcountPlayer1 == 0)
-            return 2;   //Spieler 2 gewinnt
-        else if (shipcountPlayer2 == 0)
-            return 1;   //Spiler 1 gewinnt
-        else
-            return 0;   //Es gibt noch keinen gewinner
-
+        return true;    // kein Schiff gefunden = verloren
     }
 
 }
