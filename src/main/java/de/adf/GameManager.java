@@ -1,5 +1,12 @@
 package de.adf;
 
+import java.rmi.*;
+
+interface GameManagerInterface extends Remote {
+    public boolean shoot(int x, int y) throws RemoteException;
+    public int getWinner() throws RemoteException;
+}
+
 public class GameManager {
     //TODO: change GameManager into Multiplayer interface
     //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
