@@ -34,7 +34,7 @@ public class GameBoard extends JPanel {
 
             // Cells
             for (int j = 1; j < 11; j++) {
-                Cell cell = new Cell();
+                Cell cell = new Cell(i-1, j-1); 
                 cell.setPreferredSize(new Dimension(32, 32));
                 add(cell);
             }
@@ -47,14 +47,18 @@ public class GameBoard extends JPanel {
 
         private boolean hasShip = Math.random() > 0.5;
         private boolean gotShot = false;
+        int x_coordinate;
+        int y_coordinate;
 
-        public Cell() {
+        public Cell(int x, int y) {
             super();
             setFocusable(false);
 
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     gotShot = true; // FIXME: demo only
+                    x_coordinate = x;
+                    y_coordinate = y;
                 }
             });
         }
