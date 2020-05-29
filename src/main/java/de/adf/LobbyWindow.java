@@ -158,7 +158,6 @@ public class LobbyWindow extends JFrame {
     }
 
     private void hostClicked(ActionEvent e) throws RemoteException {
-        String ip = "127.0.0.1";
-        new GameManager(ip);
+        new GameManager();
     }
 }

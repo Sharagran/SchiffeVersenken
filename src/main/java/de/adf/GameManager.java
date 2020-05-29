@@ -6,9 +6,9 @@ import java.rmi.server.*;
 
 interface GameManagerInterface extends Remote {
     public boolean shoot(int x, int y) throws RemoteException;
-
     public boolean isLost() throws RemoteException;
     public void done() throws RemoteException;
+    public void pair(String ip) throws RemoteException;
 }
 
 public class GameManager extends UnicastRemoteObject implements GameManagerInterface {
@@ -18,8 +18,8 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     private final String REMOTEOBJ = "remote";
     private int[][] myBoard;
     private GameManagerInterface remote;
-    private GameManager gm;
     private boolean yourturn;
+    private boolean isHost;
 
     public GameManager(String ip) throws RemoteException {
         super();
@@ -32,17 +32,18 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     public GameManager() throws RemoteException {
         super();
         myBoard = new int[10][10];
+        isHost = true;
+        initSkeleton();
     }
 
     public void initSkeleton() throws RemoteException {
         //System.setProperty("java.security.policy", "./java.policy");
         //System.setSecurityManager(new SecurityManager());
         Registry reg = LocateRegistry.createRegistry(PORT);
-        gm = new GameManager();
         boolean bound = false;
         for (int i = 0; ! bound && i < 2; i++) {
             try{
-                reg.rebind (REMOTEOBJ, gm);
+                reg.rebind (REMOTEOBJ, this);
                 System.out.println (REMOTEOBJ + " bound to registry, port " + PORT + ".");
                 bound = true;
             }
@@ -58,10 +59,9 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     public void initStub(String ip) {
         try {
-            ip = "localhost"; //FIXME: debug
             String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
             System.out.println(rmiurl);
-            remote = (GameManagerInterface) Naming.lookup("rmi://localhost:4711/remote");
+            remote = (GameManagerInterface) Naming.lookup(rmiurl);
             boolean b = remote.isLost();
             System.out.println("test: " + b);
         } catch (Exception e) {
@@ -122,6 +122,23 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     public void done() {
         yourturn = !yourturn;
+    }
+    
+    /**
+     * Erwiedert die verbindung mit dem Client.
+     * @param ip ip des Clients.
+     */
+    public void pair(String ip) {
+        if (remote == null) {
+            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
+            try {
+                remote = (GameManagerInterface) Naming.lookup(rmiurl);
+            } catch (Exception e) {
+                //TODO: handle exception
+                e.printStackTrace();
+            }
+        }
+
     }
     //#endregion
     
