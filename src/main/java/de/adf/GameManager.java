@@ -30,7 +30,8 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     }
     
     public GameManager() throws RemoteException {
-
+        super();
+        myBoard = new int[10][10];
     }
 
     public void initSkeleton() throws RemoteException {
