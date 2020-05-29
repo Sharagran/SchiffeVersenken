@@ -37,8 +37,6 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     }
 
     public void initSkeleton() throws RemoteException {
-        //System.setProperty("java.security.policy", "./java.policy");
-        //System.setSecurityManager(new SecurityManager());
         Registry reg = LocateRegistry.createRegistry(PORT);
         boolean bound = false;
         for (int i = 0; ! bound && i < 2; i++) {
