@@ -5,8 +5,9 @@ import javax.swing.*;
 public class GameWindow extends JFrame {
     public GameWindow() {
         setTitle("Schiffe versenken");
-        setSize(600,500);
+        setSize(1000,630);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setVisible(true);
 
         setLayout(new GridBagLayout());
