@@ -14,8 +14,8 @@ interface GameManagerInterface extends Remote {
 public class GameManager extends UnicastRemoteObject implements GameManagerInterface {
     //TODO: change GameManager into Multiplayer interface
     //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
-    private static int port = 4711;
-    private static String remoteobj = "remote";
+    private final int PORT = 4711;
+    private final String REMOTEOBJ = "remote";
     private int[][] myBoard;
     private GameManagerInterface remote;
     private GameManager gm;
@@ -37,20 +37,20 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     public void initSkeleton() throws RemoteException {
         //System.setProperty("java.security.policy", "./java.policy");
         //System.setSecurityManager(new SecurityManager());
-        Registry reg = LocateRegistry.createRegistry(port);
+        Registry reg = LocateRegistry.createRegistry(PORT);
         gm = new GameManager();
         boolean bound = false;
         for (int i = 0; ! bound && i < 2; i++) {
             try{
-                reg.rebind (remoteobj, gm);
-                System.out.println (remoteobj + " bound to registry, port " + port + ".");
+                reg.rebind (REMOTEOBJ, gm);
+                System.out.println (REMOTEOBJ + " bound to registry, port " + PORT + ".");
                 bound = true;
             }
             catch (RemoteException e) 
             {
                 System.out.println ("Rebinding failed, " + "retrying ...");
-                reg = LocateRegistry.createRegistry(port);
-                System.out.println ("Registry started on port " + port + ".");
+                reg = LocateRegistry.createRegistry(PORT);
+                System.out.println ("Registry started on port " + PORT + ".");
             }
         }
         System.out.println ("Server ready.");
@@ -59,7 +59,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     public void initStub(String ip) {
         try {
             ip = "localhost"; //FIXME: debug
-            String rmiurl = "rmi://" + ip + ":" + port + "/" + remoteobj;
+            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
             System.out.println(rmiurl);
             remote = (GameManagerInterface) Naming.lookup("rmi://localhost:4711/remote");
             boolean b = remote.isLost();
