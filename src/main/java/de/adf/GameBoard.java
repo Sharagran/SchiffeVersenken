@@ -54,11 +54,13 @@ public class GameBoard extends JPanel {
             super();
             setFocusable(false);
 
+            x_coordinate = x;
+            y_coordinate = y;
+
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     gotShot = true; // FIXME: demo only
-                    x_coordinate = x;
-                    y_coordinate = y;
+                    //TODO: insert shoot method here
                 }
             });
         }
