@@ -14,7 +14,7 @@ interface GameManagerInterface extends Remote {
 public class GameManager extends UnicastRemoteObject implements GameManagerInterface {
     //TODO: change GameManager into Multiplayer interface
     //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
-    private final int PORT = 4711;
+    public static final int PORT = 4711;
     private final String REMOTEOBJ = "remote";
     private int[][] myBoard;
     private GameManagerInterface remote;
@@ -60,8 +60,6 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
             System.out.println(rmiurl);
             remote = (GameManagerInterface) Naming.lookup(rmiurl);
-            boolean b = remote.isLost();
-            System.out.println("test: " + b);
         } catch (Exception e) {
             //TODO: handle exception
             e.printStackTrace();

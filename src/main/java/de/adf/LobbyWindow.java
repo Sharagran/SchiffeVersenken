@@ -1,29 +1,20 @@
 package de.adf;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.Socket;
-import java.net.SocketException;
+import java.awt.event.*;
+import java.net.*;
+import javax.swing.*;
+import javax.swing.event.*;
 import java.rmi.RemoteException;
-import java.util.Enumeration;
 
 /**
- * LobbyWindow
+ * LobbyWindow - Fenster zum erstellen, suchen und beitreten einer Lobby.
  */
 public class LobbyWindow extends JFrame {
 
-   private DefaultListModel ip_ListModel;
-   private JTextField ip_text;
-   private JList ip_lst;
-
+    private DefaultListModel ip_ListModel;
+    private JTextField ip_text;
+    private JList ip_lst;
 
     public LobbyWindow() {
         initUI();
@@ -31,7 +22,7 @@ public class LobbyWindow extends JFrame {
     }
 
     /**
-     * initialisiere das Nutzerinterface.
+     * Initialisiere das Nutzerinterface.
      */
     private void initUI() {
         setSize(400, 300);
@@ -74,9 +65,9 @@ public class LobbyWindow extends JFrame {
         host_btn.addActionListener(e -> {
             try {
                 hostClicked(e);
-            } catch (RemoteException e1) {
+            } catch (RemoteException ex) {
                 // TODO Auto-generated catch block
-                e1.printStackTrace();
+                ex.printStackTrace();
             }
         });
 
@@ -102,10 +93,18 @@ public class LobbyWindow extends JFrame {
         });
     }
 
+    /**
+     * Wird ausgeführt, wenn ein Element in der Liste ausgewählt wurde.
+     * @param e Eventarg der Liste
+     */
     private void ListSelectionChanged(ListSelectionEvent e) {
         ip_text.setText((String) ip_lst.getSelectedValue());
     }
 
+    /**
+     * Wird ausgeführt, wenn ein der refresh button geklickt wird.
+     * @param e Eventarg des Buttons
+     */
     private void refreshList(ActionEvent e) {
         try {
             String hostip = InetAddress.getLocalHost().getHostAddress();
@@ -113,18 +112,38 @@ public class LobbyWindow extends JFrame {
 
             for (int i = 1; i <= 254; i++) {
                 String currentIP = hostip.concat(Integer.toString(i));
-                if(serverListening(currentIP, 80)) {
+                if(serverListening(currentIP, GameManager.PORT)) {
                     ip_ListModel.addElement(currentIP);
-                    System.out.println(currentIP);
+                    System.out.println("IP added: " + currentIP);
                 }
             }
-
-            
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
+    /**
+     * Wird ausgeführt, wenn ein der join button geklickt wird.
+     * @param e Eventarg des Buttons
+     */
+    private void joinClicked(ActionEvent e) throws RemoteException {
+        String ip = ip_text.getText();
+        new GameManager(ip);
+    }
+
+    /**
+     * Wird ausgeführt, wenn ein der host button geklickt wird.
+     * @param e Eventarg des Buttons
+     */
+    private void hostClicked(ActionEvent e) throws RemoteException {
+        new GameManager();
+    }
+
+    /**
+     * Überprüft, ob ein host auf einen bestimmten Port hört.
+     * @param host Zu prüfende Adresse.
+     * @param port Zu prüfender Port.
+     */
     public boolean serverListening(String host, int port)
     {
         Socket s = null;
@@ -151,13 +170,4 @@ public class LobbyWindow extends JFrame {
             } 
         }
     }  
-
-    private void joinClicked(ActionEvent e) throws RemoteException {
-        String ip = ip_text.getText();
-        new GameManager(ip);
-    }
-
-    private void hostClicked(ActionEvent e) throws RemoteException {
-        new GameManager();
-    }
 }
