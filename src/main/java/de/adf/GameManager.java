@@ -5,6 +5,8 @@ import java.rmi.registry.*;
 import java.rmi.server.*;
 
 interface GameManagerInterface extends Remote {
+    public static final int PORT = 50000; //Dynamic Port Number
+    public static final String REMOTEOBJ = "remote";
     public boolean shoot(int x, int y) throws RemoteException;
     public boolean isLost() throws RemoteException;
     public void done() throws RemoteException;
@@ -14,8 +16,6 @@ interface GameManagerInterface extends Remote {
 public class GameManager extends UnicastRemoteObject implements GameManagerInterface {
     //TODO: change GameManager into Multiplayer interface
     //TODO: each GameManager only has the local player board. Local methods (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot, getWinner[modified])
-    public static final int PORT = 4711;
-    private final String REMOTEOBJ = "remote";
     private int[][] myBoard;
     private GameManagerInterface remote;
     private boolean yourturn;
@@ -95,7 +95,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         myBoard[x][y] = 1;
     }
 
-    ////#region Remote methods
+    //#region Remote methods
     public boolean shoot(int x, int y) throws RemoteException {
         boolean shipHit = myBoard[x][y] == 1;
         myBoard[x][y] = 0;
