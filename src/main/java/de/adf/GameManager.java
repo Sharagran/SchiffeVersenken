@@ -77,19 +77,60 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
                 return false;
         }
 
-        // place parts
-        for (int i = 0; i < shipLenght; i++) {
-            placeShipPart(x, y);
 
+        //schaut, ob Schiffe in der Nähe sind(horizontal)
+       if(horizontal == true){
+        int frameHorizontal = 0;
+             for (int i = y-1; i < i+3; i++){
+                 for(int j = x-1; i < shipLenght+2; j++){
+                     if(x<0 || y<0 || x>9 || y>9) {
+ 
+                     }else{ 
+                         if(myBoard[j][i]==1)
+                         frameHorizontal +=1;   
+                     }
+                 }
+         if (shipLenght == frameHorizontal)  
+                 placeParts(x, y, shipLenght, horizontal);
+         else
+             return false;
+             }
+         }
+ 
+         //schaut, ob Schiffe in der Nähe sind(vertikal)
+         if(horizontal == false){
+         int frameVertical = 0;
+             for (int i = x-1; i < i+3; i++){
+                 for(int j = y-1; i < shipLenght+2; j++){
+                     if(x<0 || y<0 || x>9 || y>9) {
+      
+                     }else{ 
+                         if(myBoard[j][i]==1)
+                         frameVertical +=1;     
+                     }
+                 }
+         if (shipLenght == frameVertical)  
+                     placeParts(x, y, shipLenght, horizontal);
+             else
+                 return false;
+                 
+             }   
+         }
+ 
+         return true;
+     }
+ 
+    private void placeParts(int x, int y, int shipLenght, Boolean horizontal){
+     for (int i = 0; i < shipLenght; i++) {
+          placeShipPart(x, y);
+ 
             if (horizontal)
-                x++;
+               x++;
             else
-                y++;
-        }
-
-        // ship completely placed
-        return true;
-    }
+              y++;
+         }
+     }
+     
 
     private void placeShipPart(int x, int y) {
         myBoard[x][y] = 1;
