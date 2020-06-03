@@ -81,7 +81,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         //schaut, ob Schiffe in der Nähe sind(horizontal)
        if(horizontal == true){
         int frameHorizontal = 0;
-             for (int i = y-1; i < i+3; i++){
+             for (int i = y-1; i <= y+1; i++){
                  for(int j = x-1; i < shipLenght+2; j++){
                      if(x<0 || y<0 || x>9 || y>9) {
  
@@ -100,12 +100,12 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
          //schaut, ob Schiffe in der Nähe sind(vertikal)
          if(horizontal == false){
          int frameVertical = 0;
-             for (int i = x-1; i < i+3; i++){
+             for (int i = x-1; i <= x+1; i++){
                  for(int j = y-1; i < shipLenght+2; j++){
                      if(x<0 || y<0 || x>9 || y>9) {
       
                      }else{ 
-                         if(myBoard[j][i]==1)
+                         if(myBoard[i][j]==1)
                          frameVertical +=1;     
                      }
                  }
@@ -113,10 +113,8 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
                      placeParts(x, y, shipLenght, horizontal);
              else
                  return false;
-                 
              }   
          }
- 
          return true;
      }
  
