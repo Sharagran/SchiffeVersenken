@@ -1,19 +1,18 @@
 package de.adf;
 
 /**
- * Hello world!
+ * Hauptklasse App
  */
 public final class App {
     private App() {
     }
 
     /**
-     * Says hello to the world.
-     * @param args The arguments of the program.
+     * Hauptmethode des Programms.
+     * @param args Die Argumente des Programms.
      */
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        // new MainMenu();
+        //new MainMenu();
         new GameWindow();
         //new LobbyWindow();
     }

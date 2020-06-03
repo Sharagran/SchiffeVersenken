@@ -8,7 +8,7 @@ import javax.swing.event.*;
 import java.rmi.RemoteException;
 
 /**
- * LobbyWindow - Fenster zum erstellen, suchen und beitreten einer Lobby.
+ * Fenster zum erstellen, suchen und beitreten einer Lobby.
  */
 public class LobbyWindow extends JFrame {
 
