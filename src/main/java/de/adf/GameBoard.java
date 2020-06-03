@@ -7,11 +7,20 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class GameBoard extends JPanel {
+
+    GameManager gm;
+
     public GameBoard() {
         setLayout(new GridLayout(11, 11));
         setPreferredSize(new Dimension(500, 500));
 
         generateBoard();
+
+        try {
+            gm = new GameManager();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void generateBoard() {
@@ -59,8 +68,13 @@ public class GameBoard extends JPanel {
 
             addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    gotShot = true; // FIXME: demo only
-                    //TODO: insert shoot method here
+                    gotShot = true;
+                    try {
+                        hasShip = gm.shoot(x, y);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    
                 }
             });
         }
