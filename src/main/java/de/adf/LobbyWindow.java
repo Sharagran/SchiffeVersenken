@@ -115,9 +115,11 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
-        ip_ListModel.clear();
+        System.out.println("Starting Discover...");
+        System.out.println("----------------------------------");
         refresh_btn.setText("Searching ...");
         refresh_btn.setEnabled(false);
+        ip_lst.setEnabled(false);
         Runnable r = new ClientDiscover();
         SwingUtilities.invokeLater(r);
     }
@@ -142,7 +144,7 @@ public class LobbyWindow extends JFrame {
     }
 
     /**
-     * Entdeckt alle Clients im Local Area Network. 
+     * Entdeckt alle Clients im Local Area Network in einem seperaten Thread. 
      * Nur für Netze mit einer CIDR von 24.
      */
     public class ClientDiscover implements Runnable {
@@ -167,12 +169,15 @@ public class LobbyWindow extends JFrame {
 
                 for (String addr : addrList) {
                     addr = addr.substring(0, addr.lastIndexOf('.') + 1);
-                    System.out.println(String.format("Searching in %s0-254 ", addr));
+                    System.out.println(String.format("Searching in \t%s0-254 ", addr));
                     for (int i = 1; i <= 254; i++) {
                         String currentIP = addr.concat(Integer.toString(i));
                         if (serverListening(currentIP, GameManager.PORT) && !ip_ListModel.contains(currentIP)) {
-                            System.out.println("IP found -> " + currentIP);
+                            System.out.println("IP found -> \t" + currentIP);
                             ip_ListModel.addElement(currentIP);
+                        }
+                        else if (!serverListening(currentIP, GameManager.PORT) && ip_ListModel.contains(currentIP)) {
+                            ip_ListModel.removeElement(currentIP);
                         }
                     }
                 }
@@ -180,10 +185,13 @@ public class LobbyWindow extends JFrame {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            
+
             refresh_btn.setText(Character.toString(128472));
             refresh_btn.setEnabled(true);
             ip_lst.setEnabled(true);
+
+            System.out.println("----------------------------------");
+            System.out.println("Discover Finished...");
         }
 
         /**

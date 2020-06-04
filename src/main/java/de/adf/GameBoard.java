@@ -52,7 +52,7 @@ public class GameBoard extends JPanel {
 
     private class Cell extends JButton {
 
-        private Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red);
+        private final Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red);
 
         private boolean hasShip = Math.random() > 0.5;
         private boolean gotShot = false;
