@@ -5,8 +5,8 @@ import java.rmi.registry.*;
 import java.rmi.server.*;
 
 interface GameManagerInterface extends Remote {
-    public static final int PORT = 50000; // Dynamic Port Number
-    public static final String REMOTEOBJ = "remote";
+    int PORT = 50000; // Dynamic Port Number / Private Port
+    String REMOTEOBJ = "remote";
 
     public boolean shoot(int x, int y) throws RemoteException;
 
