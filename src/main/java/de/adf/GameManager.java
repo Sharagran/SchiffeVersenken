@@ -32,8 +32,8 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         super();
         myBoard = new int[10][10];
 
-        initSkeleton();
         initStub(ip);
+        initSkeleton();
     }
 
     public GameManager() throws RemoteException {
@@ -42,7 +42,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         isHost = true;
         initSkeleton();
     }
-
+    //start server
     public void initSkeleton() throws RemoteException {
         reg = LocateRegistry.createRegistry(PORT);
         boolean bound = false;
@@ -59,7 +59,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         }
         System.out.println("Server ready.");
     }
-
+    //connect to server
     public void initStub(String ip) {
         try {
             String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
@@ -161,13 +161,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
      */
     public void pair(String ip) {
         if (remote == null) {
-            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
-            try {
-                remote = (GameManagerInterface) Naming.lookup(rmiurl);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
+            initStub(ip);
         }
         System.out.println("paired with: " + ip);
 
