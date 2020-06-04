@@ -26,6 +26,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     private GameManagerInterface remote;
     private boolean yourturn;
     private boolean isHost;
+    private Registry reg;
 
     public GameManager(String ip) throws RemoteException {
         super();
@@ -43,7 +44,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     }
 
     public void initSkeleton() throws RemoteException {
-        Registry reg = LocateRegistry.createRegistry(PORT);
+        reg = LocateRegistry.createRegistry(PORT);
         boolean bound = false;
         for (int i = 0; !bound && i < 2; i++) {
             try {
@@ -179,5 +180,11 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     }
     // #endregion
-
+    
+    @Override
+    protected void finalize() throws Throwable {
+        // TODO Auto-generated method stub
+        super.finalize();
+        UnicastRemoteObject.unexportObject(reg, true);
+    }
 }

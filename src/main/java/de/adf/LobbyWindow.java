@@ -20,6 +20,7 @@ public class LobbyWindow extends JFrame {
     private JButton refresh_btn;
     private JButton join_btn;
     private JButton host_btn;
+    private GameManager g;
 
     public LobbyWindow() {
         initUI();
@@ -47,6 +48,19 @@ public class LobbyWindow extends JFrame {
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.gridwidth = 3;
         pane.add(ip_text, gbc);
+        ip_text.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                join_btn.setEnabled(ip_text.getText().matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$"));
+            }
+        });
 
         ip_lst = new JList(ip_ListModel);
         ip_lst.setEnabled(false);
@@ -93,7 +107,6 @@ public class LobbyWindow extends JFrame {
             try {
                 joinClicked(e);
             } catch (RemoteException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         });
@@ -115,7 +128,7 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
-        System.out.println("Starting Discover...");
+        System.out.println("Starting Discover.");
         System.out.println("----------------------------------");
         refresh_btn.setText("Searching ...");
         refresh_btn.setEnabled(false);
@@ -131,7 +144,12 @@ public class LobbyWindow extends JFrame {
      */
     private void joinClicked(ActionEvent e) throws RemoteException {
         String ip = ip_text.getText();
-        new GameManager(ip);
+        if (serverListening(ip, GameManager.PORT)) {
+            g = new GameManager(ip);
+        }
+        else {
+            //TODO: verbindung nicht möglich, handle.
+        }
     }
 
     /**
@@ -140,12 +158,56 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void hostClicked(ActionEvent e) throws RemoteException {
-        new GameManager();
+        switch (host_btn.getText()) {
+            case "Host":
+                g = new GameManager();
+                host_btn.setText("Cancel");
+                refresh_btn.setVisible(false);
+                join_btn.setText("Waiting for someone to join");
+                break;
+            case "Cancel":
+                try {
+                    g.finalize();
+                    host_btn.setText("Host");
+                    refresh_btn.setVisible(true);
+                    join_btn.setText("Join");
+                } catch (Throwable e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                break;
+        }
     }
 
     /**
-     * Entdeckt alle Clients im Local Area Network in einem seperaten Thread. 
-     * Nur für Netze mit einer CIDR von 24.
+     * Überprüft, ob ein host auf einen bestimmten Port hört.
+     * 
+     * @param host Zu prüfende Adresse.
+     * @param port Zu prüfender Port.
+     */
+    public boolean serverListening(String host, int port) {
+        Socket s = null;
+        try {
+            s = new Socket();
+            s.connect(new InetSocketAddress(host, port), 10);
+            s.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (s != null) {
+                try {
+                    s.close();
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Entdeckt alle Clients im Local Area Network in einem seperaten Thread. Nur
+     * für Netze mit einer CIDR von 24.
      */
     public class ClientDiscover implements Runnable {
         /**
@@ -159,7 +221,7 @@ public class LobbyWindow extends JFrame {
                 while (n.hasMoreElements()) {
                     NetworkInterface e = n.nextElement();
                     Enumeration<InetAddress> a = e.getInetAddresses();
-                    for (; a.hasMoreElements();) {
+                    while(a.hasMoreElements()) {
                         InetAddress addr = a.nextElement();
                         if (addr.isSiteLocalAddress()) {
                             addrList.add(addr.getHostAddress());
@@ -174,9 +236,9 @@ public class LobbyWindow extends JFrame {
                         String currentIP = addr.concat(Integer.toString(i));
                         if (serverListening(currentIP, GameManager.PORT) && !ip_ListModel.contains(currentIP)) {
                             System.out.println("IP found -> \t" + currentIP);
+
                             ip_ListModel.addElement(currentIP);
-                        }
-                        else if (!serverListening(currentIP, GameManager.PORT) && ip_ListModel.contains(currentIP)) {
+                        } else if (!serverListening(currentIP, GameManager.PORT) && ip_ListModel.contains(currentIP)) {
                             ip_ListModel.removeElement(currentIP);
                         }
                     }
@@ -191,33 +253,8 @@ public class LobbyWindow extends JFrame {
             ip_lst.setEnabled(true);
 
             System.out.println("----------------------------------");
-            System.out.println("Discover Finished...");
+            System.out.println("Discover Finished.");
         }
 
-        /**
-         * Überprüft, ob ein host auf einen bestimmten Port hört.
-         * 
-         * @param host Zu prüfende Adresse.
-         * @param port Zu prüfender Port.
-         */
-        public boolean serverListening(String host, int port) {
-            Socket s = null;
-            try {
-                s = new Socket();
-                s.connect(new InetSocketAddress(host, port), 5);
-                s.close();
-                return true;
-            } catch (Exception e) {
-                return false;
-            } finally {
-                if (s != null) {
-                    try {
-                        s.close();
-                    } catch (Exception e) {
-
-                    }
-                }
-            }
-        }
     }
 }
