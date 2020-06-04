@@ -23,7 +23,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     // (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot,
     // getWinner[modified])
     private int[][] myBoard;
-    private GameManagerInterface remote;
+    public GameManagerInterface remote;
     private boolean yourturn;
     private boolean isHost;
     private Registry reg;
@@ -170,6 +170,8 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             }
         }
         System.out.println("paired with: " + ip);
+
+        new GameBoard();
     }
     // #endregion
     
