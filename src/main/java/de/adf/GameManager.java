@@ -23,7 +23,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     // (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot,
     // getWinner[modified])
     private int[][] myBoard;
-    public GameManagerInterface remote;
+    private GameManagerInterface remote;
     private boolean yourturn;
     private boolean isHost;
     private Registry reg;
@@ -69,6 +69,10 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             // TODO: handle exception
             e.printStackTrace();
         }
+    }
+
+    public GameManagerInterface getRemoteObject() {
+        return remote;
     }
 
     // leftmost x, topmost y

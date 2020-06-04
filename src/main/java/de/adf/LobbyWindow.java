@@ -167,10 +167,10 @@ public class LobbyWindow extends JFrame {
     private void joinClicked(ActionEvent ev) throws RemoteException {
         String ip = ip_text.getText();
         g = new GameManager(ip);
-
+        
         for (String addr : localAddresses) {
-            if (ip.contains(addr.substring(0, addr.lastIndexOf('.') + 1)) && serverListening(addr, GameManager.PORT)) {
-                g.remote.pair(addr);
+            if (ip.contains(addr.substring(0, addr.lastIndexOf('.') + 1))) {
+                g.getRemoteObject().pair(addr);
                 System.out.println("paired with: " + addr);
                 new GameBoard();
             }
