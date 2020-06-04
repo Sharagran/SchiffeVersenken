@@ -73,7 +73,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     // leftmost x, topmost y
     public boolean placeShip(int x, int y, int shipLenght, Boolean horizontal) {
-        // Out of bound check
+        //#region Out of bound check
         if (horizontal) {
             if (x + shipLenght >= 10)
                 return false;
@@ -81,44 +81,36 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             if (y + shipLenght >= 10)
                 return false;
         }
+        //#endregion
 
-        // schaut, ob Schiffe in der Nähe sind(horizontal)
-        if (horizontal == true) {
-            int frameHorizontal = 0;
-            for (int i = y - 1; i <= y + 1; i++) {
-                for (int j = x - 1; i < shipLenght + 2; j++) {
-                    if (x < 0 || y < 0 || x > 9 || y > 9) {
+        //#region schaut, ob Schiffe in der Nähe sind(horizontal & vertikal)
 
-                    } else {
-                        if (myBoard[j][i] == 1)
-                            frameHorizontal += 1;
-                    }
+        //FIXME: besseren variablennamen als thisY & thisX finden
+        int thisY;
+        int thisX;
+        if (horizontal) {
+            thisY = y;
+            thisX = x;
+        } else {
+            thisY = x;
+            thisX = y;
+        }
+        int frameHorizontal = 0;
+        for (int i = thisY - 1; i <= thisY + 1; i++) {
+            for (int j = thisX - 1; i < shipLenght + 2; j++) {
+                if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {
+                    if (horizontal)
+                        frameHorizontal += myBoard[j][i];
+                    else
+                        frameHorizontal += myBoard[i][j];
                 }
-                if (shipLenght == frameHorizontal)
-                    placeParts(x, y, shipLenght, horizontal);
-                else
-                    return false;
             }
         }
-
-        // schaut, ob Schiffe in der Nähe sind(vertikal)
-        if (horizontal == false) {
-            int frameVertical = 0;
-            for (int i = x - 1; i <= x + 1; i++) {
-                for (int j = y - 1; i < shipLenght + 2; j++) {
-                    if (x < 0 || y < 0 || x > 9 || y > 9) {
-
-                    } else {
-                        if (myBoard[i][j] == 1)
-                            frameVertical += 1;
-                    }
-                }
-                if (shipLenght == frameVertical)
-                    placeParts(x, y, shipLenght, horizontal);
-                else
-                    return false;
-            }
-        }
+        if (shipLenght != frameHorizontal)
+            return false;
+        //#endregion
+   
+        placeParts(x, y, shipLenght, horizontal);
         return true;
     }
 
