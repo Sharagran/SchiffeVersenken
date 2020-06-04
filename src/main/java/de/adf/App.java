@@ -14,7 +14,7 @@ public final class App {
      */
     public static void main(String[] args) {
         // new MainMenu();
-        new GameWindow();
-        // new LobbyWindow();
+        //new GameWindow();
+        new LobbyWindow();
     }
 }

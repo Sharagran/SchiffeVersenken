@@ -5,6 +5,9 @@ import java.awt.event.*;
 import java.net.*;
 import javax.swing.*;
 import javax.swing.event.*;
+
+import scala.tools.nsc.doc.html.HtmlTags.THead;
+
 import java.rmi.RemoteException;
 
 /**
@@ -12,9 +15,12 @@ import java.rmi.RemoteException;
  */
 public class LobbyWindow extends JFrame {
 
-    public DefaultListModel ip_ListModel;
+    private DefaultListModel ip_ListModel;
     private JTextField ip_text;
     private JList ip_lst;
+    private JButton refresh_btn;
+    private JButton join_btn;
+    private JButton host_btn;
 
     public LobbyWindow() {
         initUI();
@@ -45,6 +51,7 @@ public class LobbyWindow extends JFrame {
         pane.add(ip_text, gbc);
 
         ip_lst = new JList(ip_ListModel);
+        ip_lst.setEnabled(false);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.FIRST_LINE_START;
         gbc.weightx = 1.0;
@@ -54,7 +61,7 @@ public class LobbyWindow extends JFrame {
         pane.add(ip_lst, gbc);
         ip_lst.addListSelectionListener(e -> ListSelectionChanged(e));
 
-        JButton host_btn = new JButton("Host");
+        host_btn = new JButton("Host");
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.weightx = 0;
@@ -71,14 +78,15 @@ public class LobbyWindow extends JFrame {
             }
         });
 
-        JButton refresh_btn = new JButton(Character.toString(128472));
+        refresh_btn = new JButton(Character.toString(128472));
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.PAGE_END;
         pane.add(refresh_btn, gbc);
         refresh_btn.addActionListener(e -> refreshList(e));
 
-        JButton join_btn = new JButton("Join");
+        join_btn = new JButton("Join");
+        join_btn.setEnabled(false);
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.LAST_LINE_END;
@@ -100,6 +108,7 @@ public class LobbyWindow extends JFrame {
      */
     private void ListSelectionChanged(ListSelectionEvent e) {
         ip_text.setText((String) ip_lst.getSelectedValue());
+        join_btn.setEnabled(true);
     }
 
     /**
@@ -108,8 +117,10 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
-        Thread discoverThread = new Thread(new ClientDiscover());
-        discoverThread.run();
+        refresh_btn.setText("Searching ...");
+        refresh_btn.setEnabled(false);
+        Runnable r = new ClientDiscover();
+        SwingUtilities.invokeLater(r);
     }
 
     /**
@@ -149,12 +160,15 @@ public class LobbyWindow extends JFrame {
                     String currentIP = hostip.concat(Integer.toString(i));
                     if (serverListening(currentIP, GameManager.PORT)) {
                         ip_ListModel.addElement(currentIP);
-                        System.out.println("IP added: " + currentIP);
+                        System.out.println("IP found! : " + currentIP);
                     }
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            refresh_btn.setText(Character.toString(128472));
+            refresh_btn.setEnabled(true);
+            ip_lst.setEnabled(true);
         }
 
         /**
@@ -167,7 +181,7 @@ public class LobbyWindow extends JFrame {
             Socket s = null;
             try {
                 s = new Socket();
-                s.connect(new InetSocketAddress(host, port), 10);
+                s.connect(new InetSocketAddress(host, port), 5);
                 s.close();
                 return true;
             } catch (Exception e) {
