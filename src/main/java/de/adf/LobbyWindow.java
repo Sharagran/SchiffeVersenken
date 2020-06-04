@@ -171,6 +171,7 @@ public class LobbyWindow extends JFrame {
         for (String addr : localAddresses) {
             if (ip.contains(addr.substring(0, addr.lastIndexOf('.') + 1)) && serverListening(addr, GameManager.PORT)) {
                 g.remote.pair(ip);
+                System.out.println("paired with: " + ip);
                 new GameBoard();
             }
         }

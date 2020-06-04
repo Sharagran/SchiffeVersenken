@@ -160,15 +160,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
      * @param ip ip des Clients.
      */
     public void pair(String ip) {
-        if (remote == null) {
-            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
-            try {
-                remote = (GameManagerInterface) Naming.lookup(rmiurl);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
-        }
+        initStub(ip);
         System.out.println("paired with: " + ip);
 
         new GameBoard();
