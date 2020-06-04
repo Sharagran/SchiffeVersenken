@@ -169,7 +169,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
                 e.printStackTrace();
             }
         }
-
+        System.out.println("paired with: " + ip);
     }
     // #endregion
     

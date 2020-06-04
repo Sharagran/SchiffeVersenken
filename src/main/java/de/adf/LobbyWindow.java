@@ -21,10 +21,14 @@ public class LobbyWindow extends JFrame {
     private JButton join_btn;
     private JButton host_btn;
     private GameManager g;
+    private ArrayList<String> localAddresses;
 
     public LobbyWindow() {
         initUI();
         setVisible(true);
+
+        localAddresses = new ArrayList<String>();
+        setAddresses();
     }
 
     /**
@@ -112,6 +116,24 @@ public class LobbyWindow extends JFrame {
         });
     }
 
+    public void setAddresses() {
+        try {
+            Enumeration<NetworkInterface> ownNetworks = NetworkInterface.getNetworkInterfaces();
+            while (ownNetworks.hasMoreElements()) {
+                NetworkInterface e = ownNetworks.nextElement();
+                Enumeration<InetAddress> a = e.getInetAddresses();
+                while (a.hasMoreElements()) {
+                    InetAddress addr = a.nextElement();
+                    if (addr.isSiteLocalAddress()) {
+                        localAddresses.add(addr.getHostAddress());
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     /**
      * Wird ausgeführt, wenn ein Element in der Liste ausgewählt wurde.
      * 
@@ -142,13 +164,14 @@ public class LobbyWindow extends JFrame {
      * 
      * @param e Eventarg des Buttons
      */
-    private void joinClicked(ActionEvent e) throws RemoteException {
+    private void joinClicked(ActionEvent ev) throws RemoteException {
         String ip = ip_text.getText();
-        if (serverListening(ip, GameManager.PORT)) {
-            g = new GameManager(ip);
-        }
-        else {
-            //TODO: verbindung nicht möglich, handle.
+        g = new GameManager(ip);
+
+        for (String addr : localAddresses) {
+            if (ip.contains(addr.substring(0, addr.lastIndexOf('.') + 1)) && serverListening(addr, GameManager.PORT)) {
+                g.pair(addr);
+            }
         }
     }
 
@@ -215,21 +238,7 @@ public class LobbyWindow extends JFrame {
          */
         public void run() {
             try {
-                ArrayList<String> addrList = new ArrayList<String>();
-                Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
-
-                while (n.hasMoreElements()) {
-                    NetworkInterface e = n.nextElement();
-                    Enumeration<InetAddress> a = e.getInetAddresses();
-                    while(a.hasMoreElements()) {
-                        InetAddress addr = a.nextElement();
-                        if (addr.isSiteLocalAddress()) {
-                            addrList.add(addr.getHostAddress());
-                        }
-                    }
-                }
-
-                for (String addr : addrList) {
+                for (String addr : localAddresses) {
                     addr = addr.substring(0, addr.lastIndexOf('.') + 1);
                     System.out.println(String.format("Searching in \t%s0-254 ", addr));
                     for (int i = 1; i <= 254; i++) {
