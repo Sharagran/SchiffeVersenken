@@ -4,22 +4,24 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class MainMenu extends JFrame   {
-    
+public class MainMenu extends JFrame {
+
     /**
      * Erzeugt das Hauptmenü des Spiels, mit allen Buttons.
      */
     public MainMenu() {
         setTitle("Schiffe versenken");
         setLayout(new GridBagLayout());
-        setSize(1000,630);
+        setSize(1000, 630);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-       // String resource = "../../../../docs/background.png"; //Pfad anpassen, wenn das Bild richtig gesetzt ist 
+        // String resource = "../../../../docs/background.png"; //Pfad anpassen, wenn
+        // das Bild richtig gesetzt ist
         JLabel backgroundImage;
         ImageIcon iconShips;
-        iconShips = new ImageIcon(getClass().getResource("background.png")); // an die resource anpassen, wenn diese funktioniert
+        iconShips = new ImageIcon(getClass().getResource("background.png")); // an die resource anpassen, wenn diese
+                                                                             // funktioniert
         backgroundImage = new JLabel(iconShips);
         backgroundImage.setBounds(0, 0, 1000, 562);
         add(backgroundImage);

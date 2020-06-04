@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
  */
 public class LobbyWindow extends JFrame {
 
-    private DefaultListModel ip_ListModel;
+    public DefaultListModel ip_ListModel;
     private JTextField ip_text;
     private JList ip_lst;
 
@@ -95,6 +95,7 @@ public class LobbyWindow extends JFrame {
 
     /**
      * Wird ausgeführt, wenn ein Element in der Liste ausgewählt wurde.
+     * 
      * @param e Eventarg der Liste
      */
     private void ListSelectionChanged(ListSelectionEvent e) {
@@ -103,27 +104,17 @@ public class LobbyWindow extends JFrame {
 
     /**
      * Wird ausgeführt, wenn ein der refresh button geklickt wird.
+     * 
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
-        try {
-            String hostip = InetAddress.getLocalHost().getHostAddress();
-            hostip = hostip.substring(0, hostip.lastIndexOf('.') + 1);
-
-            for (int i = 1; i <= 254; i++) {
-                String currentIP = hostip.concat(Integer.toString(i));
-                if(serverListening(currentIP, GameManager.PORT)) {
-                    ip_ListModel.addElement(currentIP);
-                    System.out.println("IP added: " + currentIP);
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        Thread discoverThread = new Thread(new ClientDiscover());
+        discoverThread.run();
     }
 
     /**
      * Wird ausgeführt, wenn ein der join button geklickt wird.
+     * 
      * @param e Eventarg des Buttons
      */
     private void joinClicked(ActionEvent e) throws RemoteException {
@@ -133,6 +124,7 @@ public class LobbyWindow extends JFrame {
 
     /**
      * Wird ausgeführt, wenn ein der host button geklickt wird.
+     * 
      * @param e Eventarg des Buttons
      */
     private void hostClicked(ActionEvent e) throws RemoteException {
@@ -140,34 +132,55 @@ public class LobbyWindow extends JFrame {
     }
 
     /**
-     * Überprüft, ob ein host auf einen bestimmten Port hört.
-     * @param host Zu prüfende Adresse.
-     * @param port Zu prüfender Port.
+     * ClientDiscover
      */
-    public boolean serverListening(String host, int port)
-    {
-        Socket s = null;
-        try
-        {
-            s = new Socket();
-            s.connect(new InetSocketAddress(host, port), 10);
-            s.close();
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-        finally
-        {
-            if(s != null) {
-                try {
-                    s.close();
-                }
-                catch(Exception e){
+    public class ClientDiscover implements Runnable {
+        /**
+         * Wird ausgeführt, wenn ein der refresh button geklickt wird.
+         * 
+         * @param e Eventarg des Buttons
+         */
+        public void run() {
+            try {
+                String hostip = InetAddress.getLocalHost().getHostAddress();
+                hostip = hostip.substring(0, hostip.lastIndexOf('.') + 1);
 
+                for (int i = 1; i <= 254; i++) {
+                    String currentIP = hostip.concat(Integer.toString(i));
+                    if (serverListening(currentIP, GameManager.PORT)) {
+                        ip_ListModel.addElement(currentIP);
+                        System.out.println("IP added: " + currentIP);
+                    }
                 }
-            } 
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-    }  
+
+        /**
+         * Überprüft, ob ein host auf einen bestimmten Port hört.
+         * 
+         * @param host Zu prüfende Adresse.
+         * @param port Zu prüfender Port.
+         */
+        public boolean serverListening(String host, int port) {
+            Socket s = null;
+            try {
+                s = new Socket();
+                s.connect(new InetSocketAddress(host, port), 10);
+                s.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            } finally {
+                if (s != null) {
+                    try {
+                        s.close();
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }
+    }
 }

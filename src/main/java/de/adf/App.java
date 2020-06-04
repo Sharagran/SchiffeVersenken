@@ -9,11 +9,12 @@ public final class App {
 
     /**
      * Hauptmethode des Programms.
+     * 
      * @param args Die Argumente des Programms.
      */
     public static void main(String[] args) {
-        //new MainMenu();
+        // new MainMenu();
         new GameWindow();
-        //new LobbyWindow();
+        // new LobbyWindow();
     }
 }
