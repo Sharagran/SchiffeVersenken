@@ -6,9 +6,8 @@ import java.net.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
-import scala.tools.nsc.doc.html.HtmlTags.THead;
-
 import java.rmi.RemoteException;
+import java.util.*;
 
 /**
  * Fenster zum erstellen, suchen und beitreten einer Lobby.
@@ -35,7 +34,6 @@ public class LobbyWindow extends JFrame {
         setTitle("Lobby");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -117,6 +115,7 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
+        ip_ListModel.clear();
         refresh_btn.setText("Searching ...");
         refresh_btn.setEnabled(false);
         Runnable r = new ClientDiscover();
@@ -143,29 +142,45 @@ public class LobbyWindow extends JFrame {
     }
 
     /**
-     * ClientDiscover
+     * Entdeckt alle Clients im Local Area Network. 
+     * Nur für Netze mit einer CIDR von 24.
      */
     public class ClientDiscover implements Runnable {
         /**
          * Wird ausgeführt, wenn ein der refresh button geklickt wird.
-         * 
-         * @param e Eventarg des Buttons
          */
         public void run() {
             try {
-                String hostip = InetAddress.getLocalHost().getHostAddress();
-                hostip = hostip.substring(0, hostip.lastIndexOf('.') + 1);
+                ArrayList<String> addrList = new ArrayList<String>();
+                Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
 
-                for (int i = 1; i <= 254; i++) {
-                    String currentIP = hostip.concat(Integer.toString(i));
-                    if (serverListening(currentIP, GameManager.PORT)) {
-                        ip_ListModel.addElement(currentIP);
-                        System.out.println("IP found! : " + currentIP);
+                while (n.hasMoreElements()) {
+                    NetworkInterface e = n.nextElement();
+                    Enumeration<InetAddress> a = e.getInetAddresses();
+                    for (; a.hasMoreElements();) {
+                        InetAddress addr = a.nextElement();
+                        if (addr.isSiteLocalAddress()) {
+                            addrList.add(addr.getHostAddress());
+                        }
                     }
                 }
+
+                for (String addr : addrList) {
+                    addr = addr.substring(0, addr.lastIndexOf('.') + 1);
+                    System.out.println(String.format("Searching in %s0-254 ", addr));
+                    for (int i = 1; i <= 254; i++) {
+                        String currentIP = addr.concat(Integer.toString(i));
+                        if (serverListening(currentIP, GameManager.PORT) && !ip_ListModel.contains(currentIP)) {
+                            System.out.println("IP found -> " + currentIP);
+                            ip_ListModel.addElement(currentIP);
+                        }
+                    }
+                }
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            
             refresh_btn.setText(Character.toString(128472));
             refresh_btn.setEnabled(true);
             ip_lst.setEnabled(true);
