@@ -8,13 +8,17 @@ import java.rmi.registry.*;
 import java.rmi.server.*;
 import javax.swing.*;
 
-public class GameWindow extends JFrame {
-    GameManager gm;
+import de.adf.GameWindow.GameBoard.Cell;
 
-    public GameWindow(String ip) throws RemoteException {        
+public class GameWindow extends JFrame {
+
+    GameManager gm;
+    Cell[][] cells = new Cell[10][10];
+
+    public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
         setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
-        setResizable(false);
+        setResizable(true); //FIXME: debug only (set to false)
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -40,12 +44,11 @@ public class GameWindow extends JFrame {
         }
     }
 
-
     public class GameBoard extends JPanel {
     
         public GameBoard() {
             setLayout(new GridLayout(11, 11));
-            setPreferredSize(new Dimension(500, 500));
+            // setPreferredSize(new Dimension(500, 500));
     
             generateBoard();
         }
@@ -73,11 +76,12 @@ public class GameWindow extends JFrame {
                     Cell cell = new Cell(i-1, j-1); 
                     cell.setPreferredSize(new Dimension(32, 32));
                     add(cell);
+                    cells[i-1][j-1] = cell;
                 }
             }
         }
     
-        private class Cell extends JButton {
+        public class Cell extends JButton {
     
             private final Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red);
     
@@ -95,7 +99,7 @@ public class GameWindow extends JFrame {
     
                 addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        gotShot = true;
+                        gotShot = true; //local
                         try {
                             hasShip = gm.remote.shoot(x, y);
                         } catch (Exception ex) {
@@ -262,6 +266,7 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
     
+            cells[x][y].gotShot = true;
             return shipHit;
         }
     
