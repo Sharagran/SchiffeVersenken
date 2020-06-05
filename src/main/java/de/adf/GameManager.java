@@ -49,7 +49,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             boolean bound = false;
             for (int i = 0; !bound && i < 2; i++) {
                 try {
-                    reg.rebind("remoted", this);
+                    reg.rebind(REMOTEOBJ, this);
                     System.out.println(REMOTEOBJ + " bound to registry, port " + PORT + ".");
                     bound = true;
                 } catch (RemoteException e) {
