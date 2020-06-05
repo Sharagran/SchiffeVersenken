@@ -34,7 +34,7 @@ public class LobbyWindow extends JFrame {
      * Initialisiere das Nutzerinterface.
      */
     private void initUI() {
-        setSize(GameManager.SCREENWIDTH, GameManager.SCREENHEIGHT);
+        setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
         setResizable(false);
         setTitle("Lobby");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -224,11 +224,11 @@ public class LobbyWindow extends JFrame {
                     System.out.println(String.format("Searching in \t%s0-254 ", addr));
                     for (int i = 1; i <= 254; i++) {
                         String currentIP = addr.concat(Integer.toString(i));
-                        if (serverListening(currentIP, GameManager.PORT) && !ip_ListModel.contains(currentIP)) {
+                        if (serverListening(currentIP, Settings.PORT) && !ip_ListModel.contains(currentIP)) {
                             System.out.println("IP found -> \t" + currentIP);
 
                             ip_ListModel.addElement(currentIP);
-                        } else if (!serverListening(currentIP, GameManager.PORT) && ip_ListModel.contains(currentIP)) {
+                        } else if (!serverListening(currentIP, Settings.PORT) && ip_ListModel.contains(currentIP)) {
                             ip_ListModel.removeElement(currentIP);
                         }
                     }

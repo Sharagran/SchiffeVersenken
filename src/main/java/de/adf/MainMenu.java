@@ -12,7 +12,7 @@ public class MainMenu extends JFrame {
     public MainMenu() {
         setTitle("Schiffe versenken");
         setLayout(new GridBagLayout());
-        setSize(GameManager.SCREENWIDTH, GameManager.SCREENHEIGHT);
+        setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
