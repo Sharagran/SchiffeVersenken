@@ -8,15 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 public class GameBoard extends JPanel {
 
-    GameManager gm;
-
-    public GameBoard(GameManager gm) {
+    public GameBoard() {
         setLayout(new GridLayout(11, 11));
         setPreferredSize(new Dimension(500, 500));
 
         generateBoard();
-
-        this.gm = gm;
     }
 
     private void generateBoard() {
@@ -66,7 +62,7 @@ public class GameBoard extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     gotShot = true;
                     try {
-                        hasShip = gm.shoot(x, y);
+                        //hasShip = gm.shoot(x, y); //TODO: muss verändert werden
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

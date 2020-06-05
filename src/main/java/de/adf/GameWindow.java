@@ -14,8 +14,10 @@ public class GameWindow extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 50, 0, 50);
 
-        add(new GameBoard(gm), gbc);
-        add(new GameBoard(gm), gbc);
+
+
+        add(new GameBoard(), gbc);
+        add(new GameBoard(), gbc);
         
         validate();
         repaint();
