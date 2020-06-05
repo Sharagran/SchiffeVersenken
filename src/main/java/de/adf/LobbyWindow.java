@@ -188,6 +188,9 @@ public class LobbyWindow extends JFrame {
         }
     }
 
+    /**
+     * Holt sich alle NICs des Systems und legt lokale Adressen in einer globalen Liste ab.
+     */
     public void setAddresses() {
         try {
             Enumeration<NetworkInterface> ownNetworks = NetworkInterface.getNetworkInterfaces();
@@ -207,8 +210,8 @@ public class LobbyWindow extends JFrame {
     }
 
     /**
-     * Entdeckt alle Clients im Local Area Network in einem seperaten Thread. Nur
-     * für Netze mit einer CIDR von 24.
+     * Entdeckt alle Clients im Local Area Network in einem seperaten Thread.
+     * Nur für Netze mit einer CIDR von 24.
      */
     public class ClientDiscover implements Runnable {
         /**
