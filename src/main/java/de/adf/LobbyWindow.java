@@ -34,7 +34,8 @@ public class LobbyWindow extends JFrame {
      * Initialisiere das Nutzerinterface.
      */
     private void initUI() {
-        setSize(400, 300);
+        setSize(GameManager.SCREENWIDTH, GameManager.SCREENHEIGHT);
+        setResizable(false);
         setTitle("Lobby");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

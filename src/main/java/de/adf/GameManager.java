@@ -7,6 +7,8 @@ import java.rmi.server.*;
 interface GameManagerInterface extends Remote {
     int PORT = 50000; // Dynamic Port Number / Private Port
     String REMOTEOBJ = "remote";
+    int SCREENWIDTH = 1000;
+    int SCREENHEIGHT = 630;
 
     public boolean shoot(int x, int y) throws RemoteException;
 

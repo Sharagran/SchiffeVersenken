@@ -9,7 +9,8 @@ public class GameWindow extends JFrame {
 
     public GameWindow(String ip) throws RemoteException {        
         setTitle("Schiffe versenken");
-        setSize(1000,630);
+        setSize(GameManager.SCREENWIDTH, GameManager.SCREENHEIGHT);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
