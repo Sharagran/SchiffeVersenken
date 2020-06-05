@@ -206,12 +206,12 @@ public class GameWindow extends JFrame {
         public GameManager(String ip) throws RemoteException {
             super();
             myBoard = new int[10][10];
+            
             initSkeleton();
             if (ip == null) {
-                isHost = true; // Hosting
-                // initSkeleton();
+                isHost = true;
             } else {
-                isHost = false; // Joining
+                isHost = false;
                 initStub(ip);
             }
         }
