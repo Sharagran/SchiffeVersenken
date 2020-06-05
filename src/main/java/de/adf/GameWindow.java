@@ -35,7 +35,7 @@ public class GameWindow extends JFrame {
         gm = new GameManager(ip);
 
         localBoard.setEnabledAll(false);
-        remoteBoard.setEnabledAll(!gm.isHost);
+        remoteBoard.setEnabledAll(gm.yourturn);
 
         if (!gm.isHost) {
             System.out.println("isLost(): " + gm.remote.isLost()); //FIXME: debug
@@ -130,7 +130,7 @@ public class GameWindow extends JFrame {
                             System.out.println("ShipHit: " + hasShip);
                             repaint();
                             if(!hasShip) {
-                                remoteBoard.setEnabledAll(false);
+                                gm.done();
                             }
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -197,6 +197,8 @@ public class GameWindow extends JFrame {
                 isHost = false; //Joining
                 initStub(ip);
             }
+
+            yourturn = !isHost;
         }
     
         // start server
@@ -319,8 +321,8 @@ public class GameWindow extends JFrame {
         }
     
         public void done() {
-            // yourturn = !yourturn;
-            remoteBoard.setEnabledAll(true);
+            yourturn = !yourturn;
+            remoteBoard.setEnabledAll(yourturn);
         }
         // #endregion
     }
