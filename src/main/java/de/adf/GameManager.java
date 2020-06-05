@@ -35,7 +35,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     public GameManager() throws RemoteException {
         super();
-        
+
         myBoard = new int[10][10];
         isHost = true;
 
@@ -44,37 +44,32 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     // start server
     public void initSkeleton() throws RemoteException {
-        if (reg == null) {
-            reg = LocateRegistry.createRegistry(PORT);
-            boolean bound = false;
-            for (int i = 0; !bound && i < 2; i++) {
-                try {
-                    reg.rebind(REMOTEOBJ, this);
-                    System.out.println(REMOTEOBJ + " bound to registry, port " + PORT + ".");
-                    bound = true;
-                } catch (RemoteException e) {
-                    System.out.println("Rebinding failed, " + "retrying ...");
-                    reg = LocateRegistry.createRegistry(PORT);
-                    System.out.println("Registry started on port " + PORT + ".");
-                }
+        reg = LocateRegistry.createRegistry(PORT);
+        boolean bound = false;
+        for (int i = 0; !bound && i < 2; i++) {
+            try {
+                reg.rebind(REMOTEOBJ, this);
+                System.out.println(REMOTEOBJ + " bound to registry, port " + PORT + ".");
+                bound = true;
+            } catch (RemoteException e) {
+                System.out.println("Rebinding failed, " + "retrying ...");
+                reg = LocateRegistry.createRegistry(PORT);
+                System.out.println("Registry started on port " + PORT + ".");
             }
-            System.out.println("Server ready.");
         }
-
+        System.out.println("Server ready.");
     }
 
     // connect to server
     public void initStub(String ip) {
-        if (remote == null) {
-            try {
-                String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
-                System.out.println(rmiurl);
-                remote = (GameManagerInterface) Naming.lookup(rmiurl);
-                System.out.println("connected to: " + ip);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
+        try {
+            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
+            System.out.println(rmiurl);
+            remote = (GameManagerInterface) Naming.lookup(rmiurl);
+            System.out.println("connected to: " + ip);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 
