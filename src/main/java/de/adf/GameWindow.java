@@ -13,7 +13,7 @@ import de.adf.GameWindow.GameBoard.Cell;
 public class GameWindow extends JFrame {
 
     GameManager gm;
-    Cell[][] cells = new Cell[10][10];
+    GameBoard localBoard, remoteBoard;
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
@@ -27,24 +27,36 @@ public class GameWindow extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 50, 0, 50);
 
-        GameBoard localBoard = new GameBoard();
-        GameBoard remoteBoard = new GameBoard();
-        add(localBoard, gbc);
-        add(remoteBoard, gbc);
-        
-        validate();
-        repaint();
+        localBoard = new GameBoard();
+        remoteBoard = new GameBoard();
 
         // gm.remote.[methode()] für das remote objekt
         // gm.[methode()] für lokales objekt
         gm = new GameManager(ip);
 
+        localBoard.setEnabledAll(false);
+        remoteBoard.setEnabledAll(!gm.isHost);
+
         if (!gm.isHost) {
-            System.out.println(gm.remote.isLost()); //FIXME: debug
+            System.out.println("isLost(): " + gm.remote.isLost()); //FIXME: debug
         }
+
+
+
+        add(localBoard, gbc);
+        add(remoteBoard, gbc);
+        
+        validate();
+        repaint();
+    }
+
+    public char indexToCoordinate(int i) {  //FIXME: debug only
+        return (char)(i + 65);
     }
 
     public class GameBoard extends JPanel {
+
+        public Cell[][] cells = new Cell[10][10];
     
         public GameBoard() {
             setLayout(new GridLayout(11, 11));
@@ -80,10 +92,22 @@ public class GameWindow extends JFrame {
                 }
             }
         }
-    
+
+        private void setEnabledAll(boolean b) {
+            for (int i = 0; i < cells.length; i++) {
+                for (int j = 0; j < cells.length; j++) {
+                    cells[i][j].setEnabled(b);
+                }
+            }
+        }
+
         public class Cell extends JButton {
     
-            private final Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red);
+            private Map<String, Color> colors = Map.of(
+                "background", Color.white,
+                "hit", Color.red,
+                "background-disabled", Color.gray
+            );
     
             private boolean hasShip = Math.random() > 0.5;
             private boolean gotShot = false;
@@ -101,7 +125,13 @@ public class GameWindow extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         gotShot = true; //local
                         try {
+                            System.out.println("Shooting: " + (x+1) + "," + indexToCoordinate(y));
                             hasShip = gm.remote.shoot(x, y);
+                            System.out.println("ShipHit: " + hasShip);
+                            repaint();
+                            if(!hasShip) {
+                                remoteBoard.setEnabledAll(false);
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -118,7 +148,10 @@ public class GameWindow extends JFrame {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
     
-                g2.setColor(colors.get("background"));
+                if(isEnabled())
+                    g2.setColor(colors.get("background"));
+                else
+                    g2.setColor(colors.get("background-disabled"));
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 g2.setStroke(new BasicStroke(4));
     
@@ -261,12 +294,15 @@ public class GameWindow extends JFrame {
     
         // #region Remote methods
         public boolean shoot(int x, int y) throws RemoteException {
-            boolean shipHit = myBoard[x][y] == 1;
+            boolean shipHit = myBoard[x][y] == 1;   //FIXME: ---> getroffene schiffe werden falsch beim client angezeigt, da auf myBoard geguckt wird welches immer 0 ist und nicht auf Cell welche random sind <---
             myBoard[x][y] = 0;
             if (!shipHit)
                 done();
-    
-            cells[x][y].gotShot = true;
+            
+            System.out.println((x+1) + "," + indexToCoordinate(y) + "\tshipHit: " + shipHit);
+
+            localBoard.cells[x][y].gotShot = true;
+            localBoard.cells[x][y].repaint();
             return shipHit;
         }
     
@@ -283,9 +319,10 @@ public class GameWindow extends JFrame {
         }
     
         public void done() {
-            yourturn = !yourturn;
+            // yourturn = !yourturn;
+            remoteBoard.setEnabledAll(true);
         }
-        // #
+        // #endregion
     }
 
 }
