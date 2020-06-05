@@ -20,7 +20,6 @@ public class LobbyWindow extends JFrame {
     private JButton refresh_btn;
     private JButton join_btn;
     private JButton host_btn;
-    private GameManager gm;
     private ArrayList<String> localAddresses;
 
     public LobbyWindow() {

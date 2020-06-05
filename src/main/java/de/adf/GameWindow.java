@@ -27,7 +27,7 @@ public class GameWindow extends JFrame {
         repaint();
 
         // gm.remote.[methode()] für das remote objekt
-        // gm.[methode] für lokales objekt
+        // gm.[methode()] für lokales objekt
         if (ip != null) {
             gm = new GameManager(ip); //Joining
             System.out.println(gm.remote.isLost()); //FIXME: debug
