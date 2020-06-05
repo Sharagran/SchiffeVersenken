@@ -148,9 +148,8 @@ public class LobbyWindow extends JFrame {
      */
     private void joinClicked(ActionEvent ev) throws RemoteException {
         String ip = ip_text.getText();
-        gm = new GameManager(ip);
         setVisible(false);
-        new GameWindow(gm);
+        new GameWindow(ip);
     }
 
     /**
@@ -159,9 +158,8 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void hostClicked(ActionEvent e) throws RemoteException {
-        gm = new GameManager();
         setVisible(false);
-        new GameWindow(gm);
+        new GameWindow(null);
     }
 
     /**
