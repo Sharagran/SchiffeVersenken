@@ -10,17 +10,13 @@ public class GameBoard extends JPanel {
 
     GameManager gm;
 
-    public GameBoard() {
+    public GameBoard(GameManager gm) {
         setLayout(new GridLayout(11, 11));
         setPreferredSize(new Dimension(500, 500));
 
         generateBoard();
 
-        try {
-            gm = new GameManager();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        this.gm = gm;
     }
 
     private void generateBoard() {

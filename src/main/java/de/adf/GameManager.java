@@ -13,8 +13,6 @@ interface GameManagerInterface extends Remote {
     public boolean isLost() throws RemoteException;
 
     public void done() throws RemoteException;
-
-    public void pair(String ip) throws RemoteException;
 }
 
 public class GameManager extends UnicastRemoteObject implements GameManagerInterface {
@@ -32,44 +30,51 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         super();
         myBoard = new int[10][10];
 
-        //initStub(ip);
-        initSkeleton();
+        initStub(ip);
     }
 
     public GameManager() throws RemoteException {
         super();
+        
         myBoard = new int[10][10];
         isHost = true;
+
         initSkeleton();
     }
-    //start server
+
+    // start server
     public void initSkeleton() throws RemoteException {
-        reg = LocateRegistry.createRegistry(PORT);
-        boolean bound = false;
-        for (int i = 0; !bound && i < 2; i++) {
-            try {
-                reg.rebind(REMOTEOBJ, this);
-                System.out.println(REMOTEOBJ + " bound to registry, port " + PORT + ".");
-                bound = true;
-            } catch (RemoteException e) {
-                System.out.println("Rebinding failed, " + "retrying ...");
-                reg = LocateRegistry.createRegistry(PORT);
-                System.out.println("Registry started on port " + PORT + ".");
+        if (reg == null) {
+            reg = LocateRegistry.createRegistry(PORT);
+            boolean bound = false;
+            for (int i = 0; !bound && i < 2; i++) {
+                try {
+                    reg.rebind("remoted", this);
+                    System.out.println(REMOTEOBJ + " bound to registry, port " + PORT + ".");
+                    bound = true;
+                } catch (RemoteException e) {
+                    System.out.println("Rebinding failed, " + "retrying ...");
+                    reg = LocateRegistry.createRegistry(PORT);
+                    System.out.println("Registry started on port " + PORT + ".");
+                }
             }
+            System.out.println("Server ready.");
         }
-        System.out.println("Server ready.");
+
     }
-    //connect to server
-    public void initStub(String ownIP, String targetIP) {
-        try {
-            String rmiurl = "rmi://" + targetIP + ":" + PORT + "/" + REMOTEOBJ;
-            System.out.println(rmiurl);
-            remote = (GameManagerInterface) Naming.lookup(rmiurl);
-            remote.pair(ownIP);
-            System.out.println("paired with: " + targetIP);
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
+
+    // connect to server
+    public void initStub(String ip) {
+        if (remote == null) {
+            try {
+                String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
+                System.out.println(rmiurl);
+                remote = (GameManagerInterface) Naming.lookup(rmiurl);
+                System.out.println("connected to: " + ip);
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
         }
     }
 
@@ -79,7 +84,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
 
     // leftmost x, topmost y
     public boolean placeShip(int x, int y, int shipLenght, Boolean horizontal) {
-        //#region Out of bound check
+        // #region Out of bound check
         if (horizontal) {
             if (x + shipLenght >= 10)
                 return false;
@@ -87,11 +92,11 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             if (y + shipLenght >= 10)
                 return false;
         }
-        //#endregion
+        // #endregion
 
-        //#region schaut, ob Schiffe in der Nähe sind(horizontal & vertikal)
+        // #region schaut, ob Schiffe in der Nähe sind(horizontal & vertikal)
 
-        //FIXME: besseren variablennamen als thisY & thisX finden
+        // FIXME: besseren variablennamen als thisY & thisX finden
         int thisY;
         int thisX;
         if (horizontal) {
@@ -114,8 +119,8 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         }
         if (shipLenght != frameHorizontal)
             return false;
-        //#endregion
-   
+        // #endregion
+
         placeParts(x, y, shipLenght, horizontal);
         return true;
     }
@@ -159,31 +164,5 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     public void done() {
         yourturn = !yourturn;
     }
-
-    /**
-     * Erwiedert die verbindung mit dem Client.
-     * 
-     * @param ip ip des Clients.
-     */
-    public void pair(String ip) {
-        try {
-            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
-            System.out.println(rmiurl);
-            remote = (GameManagerInterface) Naming.lookup(rmiurl);
-        } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-        }
-        System.out.println("paired with: " + ip);
-
-        new GameBoard();
-    }
     // #endregion
-    
-    @Override
-    protected void finalize() throws Throwable {
-        // TODO Auto-generated method stub
-        super.finalize();
-        UnicastRemoteObject.unexportObject(reg, true);
-    }
 }

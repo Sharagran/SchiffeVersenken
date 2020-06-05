@@ -20,7 +20,7 @@ public class LobbyWindow extends JFrame {
     private JButton refresh_btn;
     private JButton join_btn;
     private JButton host_btn;
-    private GameManager g;
+    private GameManager gm;
     private ArrayList<String> localAddresses;
 
     public LobbyWindow() {
@@ -116,24 +116,6 @@ public class LobbyWindow extends JFrame {
         });
     }
 
-    public void setAddresses() {
-        try {
-            Enumeration<NetworkInterface> ownNetworks = NetworkInterface.getNetworkInterfaces();
-            while (ownNetworks.hasMoreElements()) {
-                NetworkInterface e = ownNetworks.nextElement();
-                Enumeration<InetAddress> a = e.getInetAddresses();
-                while (a.hasMoreElements()) {
-                    InetAddress addr = a.nextElement();
-                    if (addr.isSiteLocalAddress()) {
-                        localAddresses.add(addr.getHostAddress());
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     /**
      * Wird ausgeführt, wenn ein Element in der Liste ausgewählt wurde.
      * 
@@ -166,14 +148,8 @@ public class LobbyWindow extends JFrame {
      */
     private void joinClicked(ActionEvent ev) throws RemoteException {
         String ip = ip_text.getText();
-        g = new GameManager();
-        
-        for (String addr : localAddresses) {
-            if (ip.contains(addr.substring(0, addr.lastIndexOf('.') + 1))) {
-                g.initStub(addr, ip);
-                new GameBoard();
-            }
-        }
+        gm = new GameManager(ip);
+        new GameWindow(gm);
     }
 
     /**
@@ -182,25 +158,8 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void hostClicked(ActionEvent e) throws RemoteException {
-        switch (host_btn.getText()) {
-            case "Host":
-                g = new GameManager();
-                host_btn.setText("Cancel");
-                refresh_btn.setVisible(false);
-                join_btn.setText("Waiting for someone to join");
-                break;
-            case "Cancel":
-                try {
-                    g.finalize();
-                    host_btn.setText("Host");
-                    refresh_btn.setVisible(true);
-                    join_btn.setText("Join");
-                } catch (Throwable e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-                break;
-        }
+        gm = new GameManager();
+        new GameWindow(gm);
     }
 
     /**
@@ -226,6 +185,24 @@ public class LobbyWindow extends JFrame {
 
                 }
             }
+        }
+    }
+
+    public void setAddresses() {
+        try {
+            Enumeration<NetworkInterface> ownNetworks = NetworkInterface.getNetworkInterfaces();
+            while (ownNetworks.hasMoreElements()) {
+                NetworkInterface e = ownNetworks.nextElement();
+                Enumeration<InetAddress> a = e.getInetAddresses();
+                while (a.hasMoreElements()) {
+                    InetAddress addr = a.nextElement();
+                    if (addr.isSiteLocalAddress()) {
+                        localAddresses.add(addr.getHostAddress());
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

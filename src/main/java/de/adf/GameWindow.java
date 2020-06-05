@@ -3,7 +3,7 @@ import java.awt.*;
 import javax.swing.*;
 
 public class GameWindow extends JFrame {
-    public GameWindow() {
+    public GameWindow(GameManager gm) {
         setTitle("Schiffe versenken");
         setSize(1000,630);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,8 +14,8 @@ public class GameWindow extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(0, 50, 0, 50);
 
-        add(new GameBoard(), gbc);
-        add(new GameBoard(), gbc);
+        add(new GameBoard(gm), gbc);
+        add(new GameBoard(gm), gbc);
         
         validate();
         repaint();
