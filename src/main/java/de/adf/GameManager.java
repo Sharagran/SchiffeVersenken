@@ -66,6 +66,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
             System.out.println(rmiurl);
             remote = (GameManagerInterface) Naming.lookup(rmiurl);
             remote.pair(ownIP);
+            System.out.println("paired with: " + targetIP);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -175,7 +176,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         }
         System.out.println("paired with: " + ip);
 
-        //new GameBoard();
+        new GameBoard();
     }
     // #endregion
     

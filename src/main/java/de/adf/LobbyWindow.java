@@ -170,10 +170,8 @@ public class LobbyWindow extends JFrame {
         
         for (String addr : localAddresses) {
             if (ip.contains(addr.substring(0, addr.lastIndexOf('.') + 1))) {
-                //g.getRemoteObject().pair(addr);
                 g.initStub(addr, ip);
-                System.out.println("paired with: " + addr);
-                //new GameBoard();
+                new GameBoard();
             }
         }
     }
