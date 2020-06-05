@@ -15,11 +15,11 @@ public class GameWindow extends JFrame {
         setVisible(true);
 
         if (ip != null) {
-            gm = new GameManager(ip);
+            gm = new GameManager(ip); //Joining
             System.out.println(gm.remote.isLost()); //FIXME: debug
         }
         else {
-            gm = new GameManager();
+            gm = new GameManager(); //Hosting (gm.isHost)
         }
 
         setLayout(new GridBagLayout());

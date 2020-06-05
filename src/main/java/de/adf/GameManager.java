@@ -23,7 +23,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     private int[][] myBoard;
     public GameManagerInterface remote;
     private boolean yourturn;
-    private boolean isHost;
+    public boolean isHost;
     private Registry reg;
 
     public GameManager(String ip) throws RemoteException {
