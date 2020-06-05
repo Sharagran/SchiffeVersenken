@@ -62,7 +62,7 @@ public class GameBoard extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     gotShot = true;
                     try {
-                        //hasShip = gm.shoot(x, y); //TODO: muss verändert werden
+                        //hasShip = gm.shoot(x, y); //FIXME: muss verändert werden
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

@@ -21,7 +21,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     // (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot,
     // getWinner[modified])
     private int[][] myBoard;
-    private GameManagerInterface remote;
+    public GameManagerInterface remote;
     private boolean yourturn;
     private boolean isHost;
     private Registry reg;
@@ -146,6 +146,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     }
 
     public boolean isLost() throws RemoteException {
+        System.out.println("ausgeführt"); //FIXME: Debug
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < 10; j++) {
                 if (myBoard[i][j] == 1)
@@ -159,5 +160,5 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
     public void done() {
         yourturn = !yourturn;
     }
-    // #endregion
+    // #
 }
