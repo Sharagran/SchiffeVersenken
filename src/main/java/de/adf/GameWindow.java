@@ -125,7 +125,7 @@ public class GameWindow extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         gotShot = true; //local
                         try {
-                            System.out.println("Shooting: " + (x+1) + "," + indexToCoordinate(y));
+                            System.out.println("Shooting: " + indexToCoordinate(x) + "," + (y+1));
                             hasShip = gm.remote.shoot(x, y);
                             System.out.println("ShipHit: " + hasShip);
                             repaint();
@@ -299,7 +299,7 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
             
-            System.out.println((x+1) + "," + indexToCoordinate(y) + "\tshipHit: " + shipHit);
+            System.out.println(indexToCoordinate(x) + "," + (y+1) + "\tshipHit: " + shipHit);
 
             localBoard.cells[x][y].gotShot = true;
             localBoard.cells[x][y].repaint();
