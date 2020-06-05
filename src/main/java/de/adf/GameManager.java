@@ -30,16 +30,14 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         super();
         myBoard = new int[10][10];
 
-        initStub(ip);
-    }
-
-    public GameManager() throws RemoteException {
-        super();
-
-        myBoard = new int[10][10];
-        isHost = true;
-
-        initSkeleton();
+        if (ip != null) {
+            isHost = true; //Hosting
+            initSkeleton();
+        }
+        else {
+            isHost = false; //Joining
+            initStub(ip);
+        }
     }
 
     // start server
