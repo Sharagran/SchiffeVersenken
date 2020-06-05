@@ -117,7 +117,9 @@ public class GameWindow extends JFrame {
         private void setEnabledAll(boolean b) {
             for (int i = 0; i < cells.length; i++) {
                 for (int j = 0; j < cells.length; j++) {
-                    cells[i][j].setEnabled(b);
+                    if(!cells[i][j].gotShot) {
+                        cells[i][j].setEnabled(b);
+                    }  
                 }
             }
         }
@@ -142,6 +144,7 @@ public class GameWindow extends JFrame {
                 addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         gotShot = true; // local
+                        setEnabled(false);
                         try {
                             System.out.println("Shooting: " + indexToCoordinate(x) + "," + (y + 1));
                             hasShip = gm.remote.shoot(x, y);
@@ -197,7 +200,7 @@ public class GameWindow extends JFrame {
         // TODO: each GameManager only has the local player board. Local methods
         // (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot,
         // getWinner[modified])
-        private int[][] myBoard;
+        private int[][] myBoard;    //TODO: !!!!!!!!!!!!!!!!Höchste priorität!!!!!!! myBoard löschen und alles mit cells handeln
         public GameManagerInterface remote;
         private boolean yourturn;
         public boolean isHost;
