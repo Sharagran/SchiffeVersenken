@@ -22,6 +22,7 @@ public class MainMenu extends JFrame {
         ImageIcon iconShips;
         iconShips = new ImageIcon(getClass().getResource("background.png")); // an die resource anpassen, wenn diese
                                                                              // funktioniert
+                                                                             //FIXME: mit Toolkit umsetzen?
         backgroundImage = new JLabel(iconShips);
         backgroundImage.setBounds(0, 0, 1000, 562);
         add(backgroundImage);

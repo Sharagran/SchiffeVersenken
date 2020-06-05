@@ -13,8 +13,6 @@ public final class App {
      * @param args Die Argumente des Programms.
      */
     public static void main(String[] args) {
-        // new MainMenu();
-        //new GameWindow();
-        new LobbyWindow();
+        new MainMenu();
     }
 }
