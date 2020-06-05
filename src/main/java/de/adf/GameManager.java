@@ -32,7 +32,7 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         super();
         myBoard = new int[10][10];
 
-        initStub(ip);
+        //initStub(ip);
         initSkeleton();
     }
 
@@ -60,11 +60,12 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
         System.out.println("Server ready.");
     }
     //connect to server
-    public void initStub(String ip) {
+    public void initStub(String ownIP, String targetIP) {
         try {
-            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
+            String rmiurl = "rmi://" + targetIP + ":" + PORT + "/" + REMOTEOBJ;
             System.out.println(rmiurl);
             remote = (GameManagerInterface) Naming.lookup(rmiurl);
+            remote.pair(ownIP);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -164,12 +165,17 @@ public class GameManager extends UnicastRemoteObject implements GameManagerInter
      * @param ip ip des Clients.
      */
     public void pair(String ip) {
-        if (remote == null) {
-            initStub(ip);
+        try {
+            String rmiurl = "rmi://" + ip + ":" + PORT + "/" + REMOTEOBJ;
+            System.out.println(rmiurl);
+            remote = (GameManagerInterface) Naming.lookup(rmiurl);
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
         }
         System.out.println("paired with: " + ip);
 
-        new GameBoard();
+        //new GameBoard();
     }
     // #endregion
     
