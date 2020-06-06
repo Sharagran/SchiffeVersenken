@@ -43,6 +43,7 @@ public class MainMenu extends JFrame {
         start_btn.addActionListener(e -> startClicked(e));
 
         final JButton close_btn = new JButton("Close");
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 2;
         constraints.weightx = 2;
