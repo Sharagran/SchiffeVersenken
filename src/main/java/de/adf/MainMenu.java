@@ -28,7 +28,6 @@ public class MainMenu extends JFrame {
         backgroundImage.setBounds(0, 0, 1000, 562);
         add(backgroundImage);
 
-        setVisible(true);
 
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(0, 0, 0, 0);
@@ -51,6 +50,8 @@ public class MainMenu extends JFrame {
         constraints.anchor = GridBagConstraints.LAST_LINE_START;
         getContentPane().add(close_btn, constraints);
         close_btn.addActionListener(e -> closeClicked(e));
+
+        setVisible(true);
     }
 
     private void startClicked(ActionEvent e) {
