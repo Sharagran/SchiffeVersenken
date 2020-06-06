@@ -221,6 +221,8 @@ public class GameWindow extends JFrame {
 
         // start server
         public void initSkeleton() throws RemoteException {
+            System.setProperty("java.security.policy", "./java.policy");
+            System.setSecurityManager(new SecurityManager());
             reg = LocateRegistry.createRegistry(Settings.PORT);
             boolean bound = false;
             for (int i = 0; !bound && i < 2; i++) {
