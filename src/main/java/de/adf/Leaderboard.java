@@ -22,8 +22,6 @@ public class Leaderboard extends JFrame implements java.io.Serializable {
     private  JButton back_btn;
 
 
-
-
     public Leaderboard() {
         entries = new ArrayList<>();
     }
@@ -32,69 +30,8 @@ public class Leaderboard extends JFrame implements java.io.Serializable {
         entries = loadEntries(path);
     }
 
-    public void addEntry(LeaderboardEntry e) {
-        entries.add(e);
-    }
-
-    public void updateWins(String Playername, int wins) {
-        for (LeaderboardEntry item : entries) {
-            if(item.getPlayername().equals(Playername)) {
-                item.wins = wins;
-            }
-        }
-    }
-
-
-    public void saveEntries(String path) {
-        try {
-            FileOutputStream fileOut = new FileOutputStream(path);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(entries);
-            out.close();
-            fileOut.close();
-            System.out.printf("Leaderboard saved");
-        } catch (IOException i) {
-            i.printStackTrace();
-        }
-    }
-
-    public ArrayList<LeaderboardEntry> loadEntries(String path) {
-        ArrayList<LeaderboardEntry> loadedEntries = new ArrayList<>();
-        try {
-            File sfile = new File(path);
-            FileInputStream fis = new FileInputStream(sfile);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            loadedEntries = (ArrayList<LeaderboardEntry>) ois.readObject();
-            fis.close();
-            ois.close();
-        } catch (IOException e) {
-            System.out.println("Fehler bei der Deserialisierung");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return loadedEntries;
-    }
-
-
-    /**
-     * InnerLeaderboard
-     */
-    public class LeaderboardEntry {
-        private String name;
-        public int wins;
-
-        public LeaderboardEntry(String Playername, int wins) {
-            this.name = Playername;
-            this.wins = wins;
-        }
-
-        public String getPlayername() {
-            return name;
-        }
-    }
-
+    
     public void generateLayout(){
-
         setTitle("Leaderbord");
         setLayout(new GridBagLayout());
         setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
@@ -141,6 +78,68 @@ public class Leaderboard extends JFrame implements java.io.Serializable {
     private void returnClicked(ActionEvent e) {
         setVisible(false);
         new MainMenu();
+    }
+
+
+    public void addEntry(LeaderboardEntry e) {
+        entries.add(e);
+    }
+
+    public void updateWins(String Playername, int wins) {
+        for (LeaderboardEntry item : entries) {
+            if(item.getPlayername().equals(Playername)) {
+                item.wins = wins;
+            }
+        }
+    }
+
+
+    public void saveEntries(String path) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(path);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(entries);
+            out.close();
+            fileOut.close();
+            System.out.printf("Leaderboard saved");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
+
+    public ArrayList<LeaderboardEntry> loadEntries(String path) {
+        ArrayList<LeaderboardEntry> loadedEntries = new ArrayList<>();
+        try {
+            File sfile = new File(path);
+            FileInputStream fis = new FileInputStream(sfile);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            loadedEntries = (ArrayList<LeaderboardEntry>) ois.readObject();
+            fis.close();
+            ois.close();
+        } catch (IOException e) {
+            System.out.println("Fehler bei der Deserialisierung");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return loadedEntries;
+    }
+
+
+    /**
+     * LeaderboardEntry
+     */
+    public class LeaderboardEntry {
+        private String name;
+        public int wins;
+
+        public LeaderboardEntry(String Playername, int wins) {
+            this.name = Playername;
+            this.wins = wins;
+        }
+
+        public String getPlayername() {
+            return name;
+        }
     }
 
 }
