@@ -200,7 +200,6 @@ public class GameWindow extends JFrame {
         // TODO: each GameManager only has the local player board. Local methods
         // (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot,
         // getWinner[modified])
-        private int[][] myBoard;    //TODO: !!!!!!!!!!!!!!!!Höchste priorität!!!!!!! myBoard löschen und alles mit cells handeln
         public GameManagerInterface remote;
         private boolean yourturn;
         public boolean isHost;
@@ -208,7 +207,6 @@ public class GameWindow extends JFrame {
 
         public GameManager(String ip) throws RemoteException {
             super();
-            myBoard = new int[10][10];
             
             initSkeleton();
             if (ip == null) {
@@ -285,9 +283,9 @@ public class GameWindow extends JFrame {
                 for (int j = thisX - 1; i < shipLenght + 2; j++) {
                     if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {
                         if (horizontal)
-                            frameHorizontal += myBoard[j][i];
+                            frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
                         else
-                            frameHorizontal += myBoard[i][j];
+                            frameHorizontal += localBoard.cells[i][j].hasShip ? 1 : 0;
                     }
                 }
             }
@@ -311,21 +309,19 @@ public class GameWindow extends JFrame {
         }
 
         private void placeShipPart(int x, int y) {
-            myBoard[x][y] = 1;
+            localBoard.cells[x][y].hasShip = true;
         }
 
         // #region Remote methods
         public boolean shoot(int x, int y) throws RemoteException {
-            boolean shipHit = myBoard[x][y] == 1; // FIXME: ---> getroffene schiffe werden falsch beim client angezeigt,
-                                                  // da auf myBoard geguckt wird welches immer 0 ist und nicht auf Cell
-                                                  // welche random sind <---
-            myBoard[x][y] = 0;
+            boolean shipHit = localBoard.cells[x][y].hasShip;
+            localBoard.cells[x][y].gotShot = true;
+
             if (!shipHit)
                 done();
 
             System.out.println(indexToCoordinate(x) + "," + (y + 1) + "\tshipHit: " + shipHit);
 
-            localBoard.cells[x][y].gotShot = true;
             localBoard.cells[x][y].repaint();
             return shipHit;
         }
@@ -334,7 +330,7 @@ public class GameWindow extends JFrame {
             System.out.println("ausgeführt"); // FIXME: Debug
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
-                    if (myBoard[i][j] == 1)
+                    if (localBoard.cells[i][j].hasShip && localBoard.cells[i][j].gotShot == false)
                         return false; // Schiff gefunden = noch nicht verloren
                 }
             }
