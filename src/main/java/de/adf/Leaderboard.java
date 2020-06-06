@@ -13,7 +13,7 @@ import javax.swing.*;
 import java.awt.event.*;
 
 
-public class Leaderboard extends JFrame implements java.io.Serializable {
+public class Leaderboard extends JFrame {
 
     ArrayList<LeaderboardEntry> entries;
     private  JLabel player_1;
@@ -128,7 +128,7 @@ public class Leaderboard extends JFrame implements java.io.Serializable {
     /**
      * LeaderboardEntry
      */
-    public class LeaderboardEntry {
+    public class LeaderboardEntry implements java.io.Serializable {
         private String name;
         public int wins;
 
