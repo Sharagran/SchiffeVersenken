@@ -132,6 +132,7 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
+        setCursor(Cursor.WAIT_CURSOR);
         System.out.println("Starting Discover.");
         System.out.println("----------------------------------");
         refresh_btn.setText("Searching ...");
@@ -244,6 +245,7 @@ public class LobbyWindow extends JFrame {
 
             System.out.println("----------------------------------");
             System.out.println("Discover Finished.");
+            setCursor(Cursor.DEFAULT_CURSOR);
         }
 
     }
