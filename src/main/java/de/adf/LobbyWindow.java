@@ -89,7 +89,6 @@ public class LobbyWindow extends JFrame {
             try {
                 hostClicked(e);
             } catch (RemoteException ex) {
-                // TODO Auto-generated catch block
                 ex.printStackTrace();
             }
         });

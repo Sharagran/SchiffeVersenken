@@ -38,7 +38,7 @@ public class GameWindow extends JFrame {
             gm.remote.initStub(getLocalAddress(ip));
 
         localBoard.setEnabledAll(true);
-        remoteBoard.setEnabledAll(gm.yourturn);
+        remoteBoard.setEnabledAll(false);
 
         add(localBoard, gbc);
         add(remoteBoard, gbc);
@@ -79,6 +79,8 @@ public class GameWindow extends JFrame {
     public class GameBoard extends JPanel {
 
         public Cell[][] cells = new Cell[10][10];
+        int shipIndex = 0;
+        int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
         private boolean prepare = true;
 
         public GameBoard() {
@@ -118,9 +120,9 @@ public class GameWindow extends JFrame {
         private void setEnabledAll(boolean b) {
             for (int i = 0; i < cells.length; i++) {
                 for (int j = 0; j < cells.length; j++) {
-                    if(!cells[i][j].gotShot) {
+                    if (!cells[i][j].gotShot) {
                         cells[i][j].setEnabled(b);
-                    }  
+                    }
                 }
             }
         }
@@ -130,14 +132,10 @@ public class GameWindow extends JFrame {
             private Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red,
                     "background-disabled", Color.gray);
 
-            private boolean hasShip = false ;//Math.random() > 0.5;
+            private boolean hasShip = false;// Math.random() > 0.5;
             private boolean gotShot = false;
             private int x;
             private int y;
-            private int ship_start = 0;
-            private int ship_end = 1;
-            private int[] ships = new int[] {1,1,1,1,2,2,2,3,3,4};
-
 
             public Cell(int x, int y) {
                 super();
@@ -148,37 +146,35 @@ public class GameWindow extends JFrame {
 
                 addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-   
-                    
-                    // FIXME: Finde den Fehler nicht.
 
-                        if(ship_start>10) {
-                            prepare=false;
-                        }else if(prepare) {
-                            gm.placeShip(x, y, 4, true);
-                            // for(int i = ship_start; i < ship_end  ; i++){
-                            //     gm.placeShip(x, y, ships[ship_start], true);
-                            //     ship_start++;
-                            //     ship_end++;
-                            // }
-                        }
-                        if(prepare == false) {
+                        if (prepare) {
+                            //Schiffe platzieren
+                            if (gm.placeShip(x, y, ships[shipIndex], true)) {
+                                shipIndex++;
 
-                        gotShot = true; // local
-                        setEnabled(false);
-                        try {
-                            System.out.println("Shooting: " + indexToCoordinate(x) + "," + (y + 1));
-                            hasShip = gm.remote.shoot(x, y);
-                            System.out.println("ShipHit: " + hasShip);
-                            repaint();
-                            if(!hasShip) {
-                                gm.done();
+                                if (shipIndex >= ships.length) {
+                                    prepare = false;
+                                    localBoard.setEnabledAll(false);
+                                    remoteBoard.setEnabledAll(gm.yourturn); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                }
                             }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                        } else {
+                            //Schießen
+                            gotShot = true; // local
+                            setEnabled(false);
+                            try {
+                                System.out.println("Shooting: " + indexToCoordinate(x) + "," + (y + 1));
+                                hasShip = gm.remote.shoot(x, y);
+                                System.out.println("ShipHit: " + hasShip);
+                                repaint();
+                                if (!hasShip) {
+                                    gm.done();
+                                }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
                     }
-                   }
                 });
             }
 
@@ -195,7 +191,7 @@ public class GameWindow extends JFrame {
                 else
                     g2.setColor(colors.get("background-disabled"));
 
-                if(!gotShot && hasShip) {
+                if (!gotShot && hasShip) {
                     g2.setColor(Color.green);
                 }
                 g2.fillRect(0, 0, getWidth(), getHeight());
@@ -221,10 +217,6 @@ public class GameWindow extends JFrame {
     }
 
     class GameManager extends UnicastRemoteObject implements GameManagerInterface {
-        // TODO: change GameManager into Multiplayer interface
-        // TODO: each GameManager only has the local player board. Local methods
-        // (placeShip, placeShipPart, getWinner[modified]), multiplayer methods (shoot,
-        // getWinner[modified])
         public GameManagerInterface remote;
         private boolean yourturn;
         public boolean isHost;
@@ -232,7 +224,7 @@ public class GameWindow extends JFrame {
 
         public GameManager(String ip) throws RemoteException {
             super();
-            
+
             initSkeleton();
             if (ip == null) {
                 isHost = true;
@@ -272,7 +264,6 @@ public class GameWindow extends JFrame {
                 remote = (GameManagerInterface) Naming.lookup(rmiurl);
                 System.out.println("connected to: " + ip);
             } catch (Exception e) {
-                // TODO: handle exception
                 e.printStackTrace();
             }
         }
@@ -283,13 +274,14 @@ public class GameWindow extends JFrame {
 
         // leftmost x, topmost y
         public boolean placeShip(int x, int y, int shipLenght, Boolean horizontal) {
+            System.out.println("--------PlaceShip: " + x + "," + y + "--------");
             // #region Out of bound check
-            //shipLenght-1 da startfeld mitgezählt werden muss
+            // shipLenght-1 da startfeld mitgezählt werden muss
             if (horizontal) {
-                if (x + shipLenght-1 > 9)
+                if (x + shipLenght - 1 > 9)
                     return false;
             } else {
-                if (y + shipLenght-1 > 9)
+                if (y + shipLenght - 1 > 9)
                     return false;
             }
             // #endregion
@@ -309,12 +301,11 @@ public class GameWindow extends JFrame {
 
             int frameHorizontal = shipLenght;
             for (int i = thisY - 1; i <= thisY + 1; i++) {
-                for (int j = thisX - 1; j <= shipLenght + 1; j++) {
-                    System.out.println("CellCheck: " + (j+1) + "," + indexToCoordinate(i));
+                for (int j = thisX - 1; j <= thisX + shipLenght; j++) {
                     if (i >= 0 && j >= 0 && i <= 9 && j <= 9) {
                         if (horizontal)
                             frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
-                         else
+                        else
                             frameHorizontal += localBoard.cells[i][j].hasShip ? 1 : 0;
                     }
                 }
@@ -338,7 +329,6 @@ public class GameWindow extends JFrame {
         }
 
         private void placeShipPart(int x, int y) {
-            System.out.print("PlaceShip: " + x + "," + y);
             localBoard.cells[x][y].hasShip = true;
             localBoard.cells[x][y].repaint();
         }
