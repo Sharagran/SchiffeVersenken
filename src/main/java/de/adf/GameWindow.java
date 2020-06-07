@@ -299,20 +299,18 @@ public class GameWindow extends JFrame {
                 thisX = y;
             }
 
-            int frameHorizontal = shipLenght;
             for (int i = thisY - 1; i <= thisY + 1; i++) {
                 for (int j = thisX - 1; j <= thisX + shipLenght; j++) {
                     if (i >= 0 && j >= 0 && i <= 9 && j <= 9) {
                         if (horizontal)
-                            frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
+                            localBoard.cells[j][i].setEnabled(false);
                         else
-                            frameHorizontal += localBoard.cells[i][j].hasShip ? 1 : 0;
+                            localBoard.cells[i][j].setEnabled(false);
                     }
                 }
             }
-            if (shipLenght != frameHorizontal)
-                return false;
-            // #endregion
+            //#endregion
+
             placeParts(x, y, shipLenght, horizontal);
             return true;
         }
