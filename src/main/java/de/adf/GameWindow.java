@@ -79,6 +79,7 @@ public class GameWindow extends JFrame {
     public class GameBoard extends JPanel {
 
         public Cell[][] cells = new Cell[10][10];
+        private boolean prepare = true;
 
         public GameBoard() {
             setLayout(new GridLayout(11, 11));
@@ -129,10 +130,14 @@ public class GameWindow extends JFrame {
             private Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red,
                     "background-disabled", Color.gray);
 
-            private boolean hasShip = Math.random() > 0.5;
+            private boolean hasShip = false ;//Math.random() > 0.5;
             private boolean gotShot = false;
             private int x;
             private int y;
+            private int ship_start = 0;
+            private int ship_end = 1;
+            private int[] ships = new int[] {1,1,1,1,2,2,2,3,3,4};
+
 
             public Cell(int x, int y) {
                 super();
@@ -143,6 +148,21 @@ public class GameWindow extends JFrame {
 
                 addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
+                    /*    
+                    
+                    Finde den Fehler nicht.
+
+                        if(ship_start>10){
+                            prepare=false;
+                        }else if(prepare = true) {
+                            for(int i = ship_start; i < ship_end  ; i++){
+                                gm.placeShip(x, y, ships[ship_start], true);
+                                ship_start++;
+                                ship_end++;
+                            }
+                        }
+                        if(prepare = false){
+                        */
                         gotShot = true; // local
                         setEnabled(false);
                         try {
@@ -156,8 +176,8 @@ public class GameWindow extends JFrame {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
                     }
+                   // }
                 });
             }
 
@@ -284,9 +304,9 @@ public class GameWindow extends JFrame {
             for (int i = thisY - 1; i <= thisY + 1; i++) {
                 for (int j = thisX - 1; i < shipLenght + 2; j++) {
                     if (x >= 0 && y >= 0 && x <= 9 && y <= 9) {
-                        if (horizontal)
+                        if (horizontal){
                             frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
-                        else
+                         }else
                             frameHorizontal += localBoard.cells[i][j].hasShip ? 1 : 0;
                     }
                 }
@@ -294,7 +314,6 @@ public class GameWindow extends JFrame {
             if (shipLenght != frameHorizontal)
                 return false;
             // #endregion
-
             placeParts(x, y, shipLenght, horizontal);
             return true;
         }
