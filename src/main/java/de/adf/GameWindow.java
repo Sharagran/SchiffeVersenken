@@ -160,7 +160,7 @@ public class GameWindow extends JFrame {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
                                     try {
-                                        if (gm.isHost) {
+                                        if (gm.isHost && gm.remote != null) {
                                             gm.remote.ready();
                                         } else {
                                             remoteBoard.setEnabledAll(false);
@@ -177,7 +177,12 @@ public class GameWindow extends JFrame {
                                 gm.ready = true;
                                 if (!gm.remReady) {
                                     if (!gm.isHost) {
-                                        status_lbl.setText("Placing done, waiting for Host to be ready.");
+                                        if (!gm.remReady) {
+                                            remoteBoard.setEnabledAll(true);
+                                        }
+                                        else  {
+                                            status_lbl.setText("Placing done, waiting for Host to be ready.");
+                                        }
                                     } else {
                                         status_lbl.setText("Begin game.");
                                     }
