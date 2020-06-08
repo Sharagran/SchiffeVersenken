@@ -31,6 +31,8 @@ public class GameWindow extends JFrame {
         localBoard = new GameBoard();
         remoteBoard = new GameBoard();
 
+        generateUI();
+
         // gm.remote.[methode()] für das remote objekt
         // gm.[methode()] für lokales objekt
         gm = new GameManager(ip);
@@ -42,9 +44,15 @@ public class GameWindow extends JFrame {
 
         add(localBoard, gbc);
         add(remoteBoard, gbc);
-
+        //addButton vonder generateUI
         validate();
         repaint();
+    }
+
+    public void generateUI(){
+        //Button
+        //grid bag layout verwenden
+     
     }
 
     public char indexToCoordinate(int i) { // FIXME: debug only
@@ -82,6 +90,7 @@ public class GameWindow extends JFrame {
         int shipIndex = 0;
         int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
         private boolean prepare = true;
+        private boolean placeHorizontal = true;
 
         public GameBoard() {
             setLayout(new GridLayout(11, 11));
@@ -149,7 +158,7 @@ public class GameWindow extends JFrame {
 
                         if (prepare) {
                             //Schiffe platzieren
-                            if (gm.placeShip(x, y, ships[shipIndex], true)) {
+                            if (gm.placeShip(x, y, ships[shipIndex], placeHorizontal)) {
                                 shipIndex++;
 
                                 if (shipIndex >= ships.length) {
