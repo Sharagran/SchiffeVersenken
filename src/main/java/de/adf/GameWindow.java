@@ -306,19 +306,20 @@ public class GameWindow extends JFrame {
                 thisX = y;
             }
 
-            //FIXME: schiffe können ineinander laufen (neues schiff links von einem alten platzieren bzw. über einen wenn vertikal)
+            int frameHorizontal = shipLenght;
             for (int i = thisY - 1; i <= thisY + 1; i++) {
                 for (int j = thisX - 1; j <= thisX + shipLenght; j++) {
                     if (i >= 0 && j >= 0 && i <= 9 && j <= 9) {
                         if (horizontal)
-                            localBoard.cells[j][i].setEnabled(false);
+                            frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
                         else
-                            localBoard.cells[i][j].setEnabled(false);
+                            frameHorizontal += localBoard.cells[i][j].hasShip ? 1 : 0;
                     }
                 }
             }
-            //#endregion
-
+            if (shipLenght != frameHorizontal)
+                return false;
+            // #endregion
             placeParts(x, y, shipLenght, horizontal);
             return true;
         }
