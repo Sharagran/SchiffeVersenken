@@ -129,8 +129,7 @@ public class GameWindow extends JFrame {
 
         public class Cell extends JButton {
 
-            private Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red,
-                    "background-disabled", Color.gray);
+
 
             private boolean hasShip = false;
             private boolean gotShot = false;
@@ -224,18 +223,18 @@ public class GameWindow extends JFrame {
                 g2.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 
                 if (isEnabled())
-                    g2.setColor(colors.get("background"));
+                    g2.setColor(Settings.colors.get("background"));
                 else
-                    g2.setColor(colors.get("background-disabled"));
+                    g2.setColor(Settings.colors.get("background-disabled"));
 
                 if (hasShip) {
-                    g2.setColor(Color.green);
+                    g2.setColor(Settings.colors.get("ship"));
                 }
                 g2.fillRect(0, 0, getWidth(), getHeight());
                 g2.setStroke(new BasicStroke(4));
 
                 if (gotShot) {
-                    g2.setColor(colors.get("hit"));
+                    g2.setColor(Settings.colors.get("hit"));
                     if (hasShip) {
                         int padding = 10;
                         g2.drawLine(0 + padding, 0 + padding, getWidth() - padding, getHeight() - padding);
