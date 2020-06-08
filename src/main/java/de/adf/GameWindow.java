@@ -191,7 +191,7 @@ public class GameWindow extends JFrame {
                 else
                     g2.setColor(colors.get("background-disabled"));
 
-                if (!gotShot && hasShip) {
+                if (hasShip) {
                     g2.setColor(Color.green);
                 }
                 g2.fillRect(0, 0, getWidth(), getHeight());
