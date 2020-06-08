@@ -160,10 +160,12 @@ public class GameWindow extends JFrame {
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
-                                    remoteBoard.setEnabledAll((gm.yourturn || gm.ready));
                                     try {
-                                        if (!gm.isHost) {
+                                        if (gm.isHost) {
                                             gm.remote.ready();
+                                        }
+                                        else {
+                                            remoteBoard.setEnabledAll(false);
                                         }
                                     } catch (Exception ex) {
                                         ex.printStackTrace();
@@ -176,15 +178,15 @@ public class GameWindow extends JFrame {
                             }
                             else {
                                 if (!gm.ready) {
-                                    if (gm.isHost) {
-                                        status_lbl.setText("Placing done, waiting for Client to be ready.");
+                                    if (!gm.isHost) {
+                                        status_lbl.setText("Placing done, waiting for Host to be ready.");
                                     }
                                     else {
                                         status_lbl.setText("Begin game.");
                                     }
                                 }
                                 else {
-                                    status_lbl.setText("Cient ready, begin game.");
+                                    status_lbl.setText("Host ready, begin game.");
                                 }
                             }
                         } else {
@@ -407,8 +409,8 @@ public class GameWindow extends JFrame {
         }
 
         public void ready() {
-            ready = true;
-            status_lbl.setText("Cient ready, begin game.");
+            remoteBoard.setEnabledAll(true);
+            status_lbl.setText("Host ready, begin game.");
         }
         // #endregion
     }
