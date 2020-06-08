@@ -194,6 +194,9 @@ public class GameWindow extends JFrame {
                             try {
                                 System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y));
                                 hasShip = gm.remote.shoot(x, y);
+
+                                status_lbl.setText(Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + (hasShip ? " getroffen" : " verfehlt"));
+                                
                                 System.out.println("ShipHit: " + hasShip);
                                 repaint();
                                 if (!hasShip) {
@@ -379,6 +382,7 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
 
+            status_lbl.setText(Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + (shipHit ? " getroffen" : " verfehlt"));
             System.out.println(Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y) + "\tshipHit: " + shipHit);
 
             localBoard.cells[x][y].repaint();
