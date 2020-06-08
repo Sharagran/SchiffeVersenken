@@ -165,8 +165,8 @@ public class GameWindow extends JFrame {
                                         if (!gm.isHost) {
                                             gm.remote.ready();
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
                                     }
                                 }
                             }
