@@ -160,7 +160,7 @@ public class GameWindow extends JFrame {
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
-                                    remoteBoard.setEnabledAll((gm.yourturn || gm.ready)); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                    remoteBoard.setEnabledAll((gm.yourturn || gm.ready));
                                     try {
                                         if (!gm.isHost) {
                                             gm.remote.ready();
@@ -194,8 +194,8 @@ public class GameWindow extends JFrame {
                             try {
                                 System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y));
                                 hasShip = gm.remote.shoot(x, y);
-
-                                status_lbl.setText(Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + (hasShip ? " getroffen" : " verfehlt"));
+                                
+                                status_lbl.setText(Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + (hasShip ? " hit." : " miss."));
                                 
                                 System.out.println("ShipHit: " + hasShip);
                                 repaint();
@@ -382,7 +382,7 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
 
-            status_lbl.setText(Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + (shipHit ? " getroffen" : " verfehlt"));
+            status_lbl.setText(Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + " Enemy" +(shipHit ? " hit." : " miss."));
             System.out.println(Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y) + "\tshipHit: " + shipHit);
 
             localBoard.cells[x][y].repaint();
