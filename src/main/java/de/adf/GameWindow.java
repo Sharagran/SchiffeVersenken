@@ -15,14 +15,13 @@ public class GameWindow extends JFrame {
     GameBoard localBoard, remoteBoard;
     int shipIndex = 0;
     int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
-    private boolean prepare = true;
-    private boolean placeHorizontal = true;
+    private boolean placeHorizontal = true, prepare = true;
     JLabel status_lbl;
     JButton changeBtn;
 
     public GameWindow(String ip) throws RemoteException {
-        // gm.remote.[methode()] für das remote objekt
-        // gm.[methode()] für lokales objekt
+        // gm.remote.[methode()] für das remote Objekt
+        // gm.[methode()] für lokales Objekt
         gm = new GameManager(ip);
         if (!gm.isHost)
             gm.remote.initStub(getLocalAddress(ip));
@@ -268,11 +267,9 @@ public class GameWindow extends JFrame {
 
     class GameManager extends UnicastRemoteObject implements GameManagerInterface {
         public GameManagerInterface remote;
-        private boolean yourturn;
-        public boolean isHost;
-        private boolean remReady;
-        private boolean ready;
         private Registry reg;
+        private boolean yourturn, ready, remReady;
+        public boolean isHost;
 
         public GameManager(String ip) throws RemoteException {
             super();
