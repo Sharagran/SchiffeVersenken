@@ -9,8 +9,6 @@ import java.rmi.registry.*;
 import java.rmi.server.*;
 import javax.swing.*;
 
-import de.adf.GameWindow.GameBoard.Cell;
-
 public class GameWindow extends JFrame {
 
     GameManager gm;
