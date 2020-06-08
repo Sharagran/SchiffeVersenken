@@ -160,7 +160,7 @@ public class GameWindow extends JFrame {
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
-                                    remoteBoard.setEnabledAll((gm.yourturn && gm.ready)); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                    remoteBoard.setEnabledAll((gm.yourturn || gm.ready)); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
                                     try {
                                         if (!gm.isHost) {
                                             gm.remote.ready();
@@ -176,7 +176,12 @@ public class GameWindow extends JFrame {
                             }
                             else {
                                 if (!gm.ready) {
-                                    status_lbl.setText("Placing done, waiting for Client to be ready.");
+                                    if (gm.isHost) {
+                                        status_lbl.setText("Placing done, waiting for Client to be ready.");
+                                    }
+                                    else {
+                                        status_lbl.setText("Begin game.");
+                                    }
                                 }
                                 else {
                                     status_lbl.setText("Cient ready, begin game.");
