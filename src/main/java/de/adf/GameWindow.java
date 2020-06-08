@@ -52,7 +52,7 @@ public class GameWindow extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
-        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex] + " " + (placeHorizontal ? "horizontal" : "vertikal"));
+        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex]);
         status_lbl.setFont(new Font(status_lbl.getName(), Font.PLAIN, 23));
         add(status_lbl, gbc);
 
@@ -186,7 +186,7 @@ public class GameWindow extends JFrame {
                             }
 
                             if (shipIndex < ships.length) {
-                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]  + " " + (placeHorizontal ? "horizontal" : "vertikal"));
+                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
                             } else {
                                 gm.ready = true;
                                 if (!gm.remReady) {
