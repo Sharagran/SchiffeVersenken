@@ -16,7 +16,9 @@ public class GameWindow extends JFrame {
     int shipIndex = 0;
     int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
     private boolean prepare = true;
+    private boolean placeHorizontal = true;
     JLabel status_lbl;
+    JButton changeBtn;
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
@@ -33,6 +35,8 @@ public class GameWindow extends JFrame {
         localBoard = new GameBoard();
         remoteBoard = new GameBoard();
 
+        generateUI();
+
         // gm.remote.[methode()] für das remote objekt
         // gm.[methode()] für lokales objekt
         gm = new GameManager(ip);
@@ -46,14 +50,28 @@ public class GameWindow extends JFrame {
         gbc.gridx = 1;
         add(remoteBoard, gbc);
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 2;
-        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex]);
+        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex] + " " + (placeHorizontal ? "horizontal" : "vertikal"));
         status_lbl.setFont(new Font(status_lbl.getName(), Font.PLAIN, 23));
         add(status_lbl, gbc);
 
         validate();
         repaint();
+    }
+
+    public void generateUI(){
+        changeBtn = new JButton("Horizontal");
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        changeBtn.addActionListener(e -> changeClicked(e));
+        add(changeBtn, gbc);
+    }
+
+    private void changeClicked(ActionEvent e) {
+        placeHorizontal = !placeHorizontal;
+        changeBtn.setText(placeHorizontal ? "Horizontal" : "Vertikal");
     }
 
     public String getLocalAddress(String remoteip) {
@@ -147,13 +165,14 @@ public class GameWindow extends JFrame {
                     public void actionPerformed(ActionEvent e) {
 
                         if (prepare) {
-                            // Schiffe platzieren
-                            if (gm.placeShip(x, y, ships[shipIndex], true)) {
+                            //Schiffe platzieren
+                            if (gm.placeShip(x, y, ships[shipIndex], placeHorizontal)) {
                                 shipIndex++;
 
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
+                                    changeBtn.setVisible(false);
                                     try {
                                         if (gm.isHost && gm.remote != null) {
                                             gm.remote.ready();
@@ -167,7 +186,7 @@ public class GameWindow extends JFrame {
                             }
 
                             if (shipIndex < ships.length) {
-                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
+                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]  + " " + (placeHorizontal ? "horizontal" : "vertikal"));
                             } else {
                                 gm.ready = true;
                                 if (!gm.remReady) {
