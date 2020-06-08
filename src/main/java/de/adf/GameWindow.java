@@ -18,6 +18,7 @@ public class GameWindow extends JFrame {
     int shipIndex = 0;
     int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
     private boolean prepare = true;
+    JLabel status_lbl = new JLabel("Status");
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
@@ -29,7 +30,7 @@ public class GameWindow extends JFrame {
 
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0, 50, 0, 50);
+        gbc.insets = new Insets(0, 50, 20, 50);
 
         localBoard = new GameBoard();
         remoteBoard = new GameBoard();
@@ -43,8 +44,14 @@ public class GameWindow extends JFrame {
         localBoard.setEnabledAll(true);
         remoteBoard.setEnabledAll(false);
 
+
         add(localBoard, gbc);
+        gbc.gridx = 1;
         add(remoteBoard, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        add(status_lbl, gbc);
 
         validate();
         repaint();
