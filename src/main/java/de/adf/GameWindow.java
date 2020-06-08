@@ -18,6 +18,7 @@ public class GameWindow extends JFrame {
     private boolean prepare = true;
     private boolean placeHorizontal = true;
     JLabel status_lbl;
+    JButton changeBtn;
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
@@ -48,9 +49,8 @@ public class GameWindow extends JFrame {
         add(localBoard, gbc);
         gbc.gridx = 1;
         add(remoteBoard, gbc);
-        //addButton von der generateUI
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.gridwidth = 2;
         status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex]);
         status_lbl.setFont(new Font(status_lbl.getName(), Font.PLAIN, 23));
@@ -61,9 +61,17 @@ public class GameWindow extends JFrame {
     }
 
     public void generateUI(){
-        //Button
-        //grid bag layout verwenden
-     
+        changeBtn = new JButton("Horizontal");
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        changeBtn.addActionListener(e -> changeClicked(e));
+        add(changeBtn, gbc);
+    }
+
+    private void changeClicked(ActionEvent e) {
+        placeHorizontal = !placeHorizontal;
+        changeBtn.setText(placeHorizontal ? "Horizontal" : "Vertikal");
     }
 
     public String getLocalAddress(String remoteip) {
@@ -164,6 +172,7 @@ public class GameWindow extends JFrame {
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
+                                    changeBtn.setVisible(false);
                                     try {
                                         if (gm.isHost && gm.remote != null) {
                                             gm.remote.ready();
