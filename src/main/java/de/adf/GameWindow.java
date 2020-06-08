@@ -415,7 +415,9 @@ public class GameWindow extends JFrame {
             gm.remReady = true;
             status_lbl.setText("Host ready, begin game.");
 
-            remoteBoard.setEnabledAll(true);
+            if (gm.ready) {
+                remoteBoard.setEnabledAll(true);
+            }
         }
         // #endregion
     }
