@@ -17,13 +17,9 @@ public class MainMenu extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // String resource = "../../../../docs/background.png"; //Pfad anpassen, wenn
-        // das Bild richtig gesetzt ist
         JLabel backgroundImage;
         ImageIcon iconShips;
-        iconShips = new ImageIcon(getClass().getResource("background.png")); // an die resource anpassen, wenn diese
-                                                                             // funktioniert
-                                                                             //TODO: mit Toolkit umsetzen?
+        iconShips = new ImageIcon("resources/background.png");
         backgroundImage = new JLabel(iconShips);
         backgroundImage.setBounds(0, 0, 1000, 562);
         add(backgroundImage);

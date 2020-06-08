@@ -173,12 +173,7 @@ public class GameWindow extends JFrame {
                                 gm.ready = true;
                                 if (!gm.remReady) {
                                     if (!gm.isHost) {
-                                        if (!gm.remReady) {
-                                            remoteBoard.setEnabledAll(true);
-                                        }
-                                        else  {
-                                            status_lbl.setText("Placing done, waiting for Host to be ready.");
-                                        }
+                                        status_lbl.setText("Placing done, waiting for Host to be ready.");
                                     } else {
                                         status_lbl.setText("Begin game.");
                                     }
