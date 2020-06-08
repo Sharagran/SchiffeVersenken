@@ -28,7 +28,7 @@ public class MainMenu extends JFrame {
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(0, 0, 0, 0);
 
-        final JButton start_btn = new JButton("Play");
+        final JButton start_btn = new JButton("Spiel starten");
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -38,7 +38,7 @@ public class MainMenu extends JFrame {
         getContentPane().add(start_btn, constraints);
         start_btn.addActionListener(e -> startClicked(e));
 
-        final JButton close_btn = new JButton("Close");
+        final JButton close_btn = new JButton("Schließen");
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridx = 0;
         constraints.gridy = 2;
