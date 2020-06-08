@@ -161,6 +161,13 @@ public class GameWindow extends JFrame {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
                                     remoteBoard.setEnabledAll((gm.yourturn && gm.ready)); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                    try {
+                                        if (!gm.isHost) {
+                                            gm.remote.ready();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
 
