@@ -177,7 +177,8 @@ public class GameWindow extends JFrame {
                                 status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
                             }
                             else {
-                                if (!gm.ready) {
+                                gm.ready = true;
+                                if (!gm.remReady) {
                                     if (!gm.isHost) {
                                         status_lbl.setText("Placing done, waiting for Host to be ready.");
                                     }
@@ -187,6 +188,7 @@ public class GameWindow extends JFrame {
                                 }
                                 else {
                                     status_lbl.setText("Host ready, begin game.");
+                                    remoteBoard.setEnabledAll(gm.remReady);
                                 }
                             }
                         } else {
@@ -254,6 +256,7 @@ public class GameWindow extends JFrame {
         public GameManagerInterface remote;
         private boolean yourturn;
         public boolean isHost;
+        private boolean remReady;
         private boolean ready;
         private Registry reg;
 
@@ -409,8 +412,10 @@ public class GameWindow extends JFrame {
         }
 
         public void ready() {
-            remoteBoard.setEnabledAll(true);
+            gm.remReady = true;
             status_lbl.setText("Host ready, begin game.");
+
+            
         }
         // #endregion
     }
