@@ -44,7 +44,6 @@ public class GameWindow extends JFrame {
         localBoard.setEnabledAll(true);
         remoteBoard.setEnabledAll(false);
 
-
         add(localBoard, gbc);
         gbc.gridx = 1;
         add(remoteBoard, gbc);
@@ -153,7 +152,7 @@ public class GameWindow extends JFrame {
                     public void actionPerformed(ActionEvent e) {
 
                         if (prepare) {
-                            //Schiffe platzieren
+                            // Schiffe platzieren
                             if (gm.placeShip(x, y, ships[shipIndex], true)) {
                                 shipIndex++;
 
@@ -163,8 +162,7 @@ public class GameWindow extends JFrame {
                                     try {
                                         if (gm.isHost) {
                                             gm.remote.ready();
-                                        }
-                                        else {
+                                        } else {
                                             remoteBoard.setEnabledAll(false);
                                         }
                                     } catch (Exception ex) {
@@ -175,36 +173,44 @@ public class GameWindow extends JFrame {
 
                             if (shipIndex < ships.length) {
                                 status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
-                            }
-                            else {
+                            } else {
                                 gm.ready = true;
                                 if (!gm.remReady) {
                                     if (!gm.isHost) {
                                         status_lbl.setText("Placing done, waiting for Host to be ready.");
-                                    }
-                                    else {
+                                    } else {
                                         status_lbl.setText("Begin game.");
                                     }
-                                }
-                                else {
+                                } else {
                                     status_lbl.setText("Host ready, begin game.");
                                     remoteBoard.setEnabledAll(gm.remReady);
                                 }
                             }
                         } else {
-                            //Schießen
+                            // Schießen
                             gotShot = true; // local
                             setEnabled(false);
                             try {
-                                System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y));
+                                System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + ","
+                                        + Coordinate.indexToYCoordinate(y));
                                 hasShip = gm.remote.shoot(x, y);
-                                
-                                status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "]" + (hasShip ? " hit." : " miss."));
-                                
                                 repaint();
+
+                                status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "]" + (hasShip ? " hit." : " miss."));
+
+                                
                                 if (!hasShip) {
                                     gm.done();
                                 }
+
+                                try {
+                                    if (gm.remote.isLost()) {
+                                        gm.gameOver(true);
+                                    }
+                                } catch (Exception exc) {
+                                    exc.printStackTrace();
+                                }
+
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
@@ -213,7 +219,7 @@ public class GameWindow extends JFrame {
                 });
                 addMouseListener(new java.awt.event.MouseAdapter() {
                     public void mouseEntered(java.awt.event.MouseEvent evt) {
-                        if(prepare) {
+                        if (prepare) {
                             status_lbl.setText("Place ship in: " + Coordinate.toString(x, y));
                         } else {
                             status_lbl.setText("Shoot: " + Coordinate.toString(x, y));
@@ -386,18 +392,38 @@ public class GameWindow extends JFrame {
             localBoard.cells[x][y].repaint();
         }
 
+        private void gameOver(boolean win) {
+            localBoard.setEnabledAll(false);
+            remoteBoard.setEnabledAll(false);
+
+            // UnicastRemoteObject.unexportObject(gm.reg, true);
+            if(win) {
+                JOptionPane.showMessageDialog(null, "Gewonnen!", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Verloren!", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+
         // #region Remote methods
         public boolean shoot(int x, int y) throws RemoteException {
             boolean shipHit = localBoard.cells[x][y].hasShip;
             localBoard.cells[x][y].gotShot = true;
+            localBoard.cells[x][y].repaint();
 
             if (!shipHit)
                 done();
 
-            status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "] Enemy" +(shipHit ? " hit." : " miss."));
+            try {
+                if (isLost()) {
+                    gameOver(false);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "] Enemy" + (shipHit ? " hit." : " miss."));
             System.out.println(Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y) + "\tgot shot");
 
-            localBoard.cells[x][y].repaint();
             return shipHit;
         }
 
@@ -413,20 +439,7 @@ public class GameWindow extends JFrame {
         }
 
         public void done() {
-            try {
-                if(isLost()) {
-                    localBoard.setEnabledAll(false);
-                    remoteBoard.setEnabledAll(false);
-
-                    // UnicastRemoteObject.unexportObject(gm.reg, true);
-                    JOptionPane.showMessageDialog(null, "infoMessage",  "titleBar", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } catch (Exception e) {
-                //TODO: handle exception
-            }
-            
-
-            //Change turn
+            // Change turn
             yourturn = !yourturn;
             remoteBoard.setEnabledAll(yourturn);
         }
