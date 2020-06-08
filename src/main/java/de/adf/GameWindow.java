@@ -217,15 +217,6 @@ public class GameWindow extends JFrame {
                         }
                     }
                 });
-                addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseEntered(java.awt.event.MouseEvent evt) {
-                        if (prepare) {
-                            status_lbl.setText("Place ship in: " + Coordinate.toString(x, y));
-                        } else {
-                            status_lbl.setText("Shoot: " + Coordinate.toString(x, y));
-                        }
-                    }
-                });
             }
 
             @Override
@@ -394,11 +385,16 @@ public class GameWindow extends JFrame {
             localBoard.setEnabledAll(false);
             remoteBoard.setEnabledAll(false);
 
-            // UnicastRemoteObject.unexportObject(gm.reg, true);
+            try {
+                UnicastRemoteObject.unexportObject(gm.reg, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
             if(win) {
-                JOptionPane.showMessageDialog(null, "Gewonnen!", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+                status_lbl.setText("Gewonnen!");
             } else {
-                JOptionPane.showMessageDialog(null, "Verloren!", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+                status_lbl.setText("Verloren!");
             }
         }
 
