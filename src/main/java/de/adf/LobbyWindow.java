@@ -92,7 +92,7 @@ public class LobbyWindow extends JFrame {
             }
         });
 
-        refresh_btn = new JButton(Character.toString(128472));
+        refresh_btn = new JButton(Character.toString(8635));
         gbc.gridx = 1;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.PAGE_END;

@@ -21,9 +21,21 @@ public class GameWindow extends JFrame {
     JButton changeBtn;
 
     public GameWindow(String ip) throws RemoteException {
+        // gm.remote.[methode()] für das remote objekt
+        // gm.[methode()] für lokales objekt
+        gm = new GameManager(ip);
+        if (!gm.isHost)
+            gm.remote.initStub(getLocalAddress(ip));
+
+        generateUI();
+        validate();
+        repaint();
+    }
+
+    public void generateUI() throws RemoteException {
         setTitle("Schiffe versenken");
         setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
-        setResizable(true); // TODO: debug only (set to false)
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -33,17 +45,8 @@ public class GameWindow extends JFrame {
         gbc.insets = new Insets(0, 50, 20, 50);
 
         localBoard = new GameBoard();
-        remoteBoard = new GameBoard();
-
-        generateUI();
-
-        // gm.remote.[methode()] für das remote objekt
-        // gm.[methode()] für lokales objekt
-        gm = new GameManager(ip);
-        if (!gm.isHost)
-            gm.remote.initStub(getLocalAddress(ip));
-
         localBoard.setEnabledAll(true);
+        remoteBoard = new GameBoard();
         remoteBoard.setEnabledAll(false);
 
         add(localBoard, gbc);
@@ -52,17 +55,12 @@ public class GameWindow extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
-        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex]);
+        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex] + " (" + (shipIndex + 1) + " von " + ships.length + ")");
         status_lbl.setFont(new Font(status_lbl.getName(), Font.PLAIN, 23));
         add(status_lbl, gbc);
 
-        validate();
-        repaint();
-    }
-
-    public void generateUI(){
         changeBtn = new JButton("Horizontal");
-        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = 1;
         gbc.gridx = 0;
         gbc.gridy = 1;
         changeBtn.addActionListener(e -> changeClicked(e));
@@ -146,9 +144,6 @@ public class GameWindow extends JFrame {
         }
 
         public class Cell extends JButton {
-
-
-
             private boolean hasShip = false;
             private boolean gotShot = false;
             private int x;
@@ -186,17 +181,17 @@ public class GameWindow extends JFrame {
                             }
 
                             if (shipIndex < ships.length) {
-                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
+                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex] + " (" + (shipIndex + 1) + " von " + ships.length + ")");
                             } else {
                                 gm.ready = true;
                                 if (!gm.remReady) {
                                     if (!gm.isHost) {
-                                        status_lbl.setText("Placing done, waiting for Host to be ready.");
+                                        status_lbl.setText("Platzierungsphase beendet, warte bis der Host bereit ist.");
                                     } else {
-                                        status_lbl.setText("Begin game.");
+                                        status_lbl.setText("Starte Spiel.");
                                     }
                                 } else {
-                                    status_lbl.setText("Host ready, begin game.");
+                                    status_lbl.setText("Host ist bereit, starte Spiel.");
                                     remoteBoard.setEnabledAll(gm.remReady);
                                 }
                             }
@@ -210,7 +205,7 @@ public class GameWindow extends JFrame {
                                 hasShip = gm.remote.shoot(x, y);
                                 repaint();
 
-                                status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "]" + (hasShip ? " hit." : " miss."));
+                                status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "]" + (hasShip ? " getroffen." : " verfehlt."));
 
                                 
                                 if (!hasShip) {
@@ -421,7 +416,7 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
 
-            status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "] Enemy" + (shipHit ? " hit." : " miss."));
+            status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "] Gegner hat" + (shipHit ? " getroffen." : " verfehlt."));
 
             try {
                 if (isLost()) {
@@ -453,11 +448,10 @@ public class GameWindow extends JFrame {
 
         public void ready() {
             gm.remReady = true;
-            status_lbl.setText("Host ready, begin game.");
+            status_lbl.setText("Host ist bereit, starte Spiel.");
 
-            if (gm.ready) {
+            if (gm.ready)
                 remoteBoard.setEnabledAll(true);
-            }
         }
         // #endregion
     }
