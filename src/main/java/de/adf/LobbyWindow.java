@@ -31,6 +31,7 @@ public class LobbyWindow extends JFrame {
      * Initialisiere das Nutzerinterface.
      */
     private void initUI() {
+        // Fenster Eigenschaften
         setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
         setResizable(false);
         setTitle("Lobby");
@@ -44,6 +45,8 @@ public class LobbyWindow extends JFrame {
 
         ip_ListModel = new DefaultListModel();
 
+        // Erzeugt IP Eingabefeld und fügt einen EventHandler hinzu welcher überprüft ob
+        // die IP valide ist und dem entsprechend den Join button aktiviert oder deaktiviert
         ip_text = new JTextField();
         ip_text.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {}
@@ -57,6 +60,7 @@ public class LobbyWindow extends JFrame {
         gbc.gridwidth = 3;
         pane.add(ip_text, gbc);
 
+        // Erzeugt eine Liste welche alle gefundenen IP's enthalten wird
         ip_lst = new JList(ip_ListModel);
         ip_lst.setEnabled(false);
         gbc.fill = GridBagConstraints.BOTH;
@@ -68,6 +72,7 @@ public class LobbyWindow extends JFrame {
         pane.add(ip_lst, gbc);
         ip_lst.addListSelectionListener(e -> ListSelectionChanged(e));
 
+        // Erzeugt den Host button
         host_btn = new JButton("Host");
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -84,6 +89,7 @@ public class LobbyWindow extends JFrame {
             }
         });
 
+        // Erzeugt den Refresh button welcher zum discovern von IP's genutzt wird
         refresh_btn = new JButton(Character.toString(8635));
         gbc.gridx = 1;
         gbc.gridy = 2;
@@ -91,6 +97,7 @@ public class LobbyWindow extends JFrame {
         pane.add(refresh_btn, gbc);
         refresh_btn.addActionListener(e -> refreshList(e));
 
+        // Erzeugt den Join button
         join_btn = new JButton("Join");
         join_btn.setEnabled(false);
         gbc.gridx = 2;
