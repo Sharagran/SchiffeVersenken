@@ -222,15 +222,6 @@ public class GameWindow extends JFrame {
                         }
                     }
                 });
-                addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseEntered(java.awt.event.MouseEvent evt) {
-                        if (prepare) {
-                            status_lbl.setText("Place ship in: " + Coordinate.toString(x, y));
-                        } else {
-                            status_lbl.setText("Shoot: " + Coordinate.toString(x, y));
-                        }
-                    }
-                });
             }
 
             @Override
@@ -343,22 +334,20 @@ public class GameWindow extends JFrame {
             // #endregion
 
             // #region schaut, ob Schiffe in der Nähe sind(horizontal & vertikal)
-
-            // TODO: besseren variablennamen als thisY & thisX finden
-            int thisY;
-            int thisX;
+            int shortEdge;
+            int longEdge;
             if (horizontal) {
-                thisY = y;
-                thisX = x;
+                shortEdge = y;
+                longEdge = x;
             } else {
-                thisY = x;
-                thisX = y;
+                shortEdge = x;
+                longEdge = y;
             }
 
             ArrayList<Coordinate> disabledCells = new ArrayList<>();
             int frameHorizontal = shipLenght;
-            for (int i = thisY - 1; i <= thisY + 1; i++) {
-                for (int j = thisX - 1; j <= thisX + shipLenght; j++) {
+            for (int i = shortEdge - 1; i <= shortEdge + 1; i++) {
+                for (int j = longEdge - 1; j <= longEdge + shipLenght; j++) {
                     if (i >= 0 && j >= 0 && i <= 9 && j <= 9) {
                         if (horizontal) {
                             frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
@@ -401,11 +390,16 @@ public class GameWindow extends JFrame {
             localBoard.setEnabledAll(false);
             remoteBoard.setEnabledAll(false);
 
-            // UnicastRemoteObject.unexportObject(gm.reg, true);
+            try {
+                UnicastRemoteObject.unexportObject(gm.reg, true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
             if(win) {
-                JOptionPane.showMessageDialog(null, "Gewonnen!", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+                status_lbl.setText("Gewonnen!");
             } else {
-                JOptionPane.showMessageDialog(null, "Verloren!", "GameOver", JOptionPane.INFORMATION_MESSAGE);
+                status_lbl.setText("Verloren!");
             }
         }
 
