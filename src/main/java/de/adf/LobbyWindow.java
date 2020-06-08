@@ -16,9 +16,7 @@ public class LobbyWindow extends JFrame {
     private DefaultListModel ip_ListModel;
     private JTextField ip_text;
     private JList ip_lst;
-    private JButton refresh_btn;
-    private JButton join_btn;
-    private JButton host_btn;
+    private JButton refresh_btn, join_btn, host_btn;
     private ArrayList<String> localAddresses;
 
     public LobbyWindow() {
@@ -47,23 +45,17 @@ public class LobbyWindow extends JFrame {
         ip_ListModel = new DefaultListModel();
 
         ip_text = new JTextField();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
-        gbc.gridwidth = 3;
-        pane.add(ip_text, gbc);
         ip_text.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-
-            }
-
+            public void changedUpdate(DocumentEvent e) {}
+            public void removeUpdate(DocumentEvent e) {}
             public void insertUpdate(DocumentEvent e) {
                 join_btn.setEnabled(ip_text.getText().matches("^(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})$"));
             }
         });
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.FIRST_LINE_START;
+        gbc.gridwidth = 3;
+        pane.add(ip_text, gbc);
 
         ip_lst = new JList(ip_ListModel);
         ip_lst.setEnabled(false);
@@ -108,8 +100,8 @@ public class LobbyWindow extends JFrame {
         join_btn.addActionListener(e -> {
             try {
                 joinClicked(e);
-            } catch (RemoteException e1) {
-                e1.printStackTrace();
+            } catch (RemoteException ex) {
+                ex.printStackTrace();
             }
         });
     }
@@ -130,7 +122,6 @@ public class LobbyWindow extends JFrame {
      * @param e Eventarg des Buttons
      */
     private void refreshList(ActionEvent e) {
-        setCursor(Cursor.WAIT_CURSOR);
         System.out.println("Starting Discover.");
         System.out.println("----------------------------------");
         refresh_btn.setText("Searching ...");
@@ -181,7 +172,7 @@ public class LobbyWindow extends JFrame {
                 try {
                     s.close();
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         }
@@ -225,14 +216,12 @@ public class LobbyWindow extends JFrame {
                         String currentIP = addr.concat(Integer.toString(i));
                         if (serverListening(currentIP, Settings.PORT) && !ip_ListModel.contains(currentIP)) {
                             System.out.println("IP found -> \t" + currentIP);
-
                             ip_ListModel.addElement(currentIP);
                         } else if (!serverListening(currentIP, Settings.PORT) && ip_ListModel.contains(currentIP)) {
                             ip_ListModel.removeElement(currentIP);
                         }
                     }
                 }
-
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -243,7 +232,6 @@ public class LobbyWindow extends JFrame {
 
             System.out.println("----------------------------------");
             System.out.println("Discover Finished.");
-            setCursor(Cursor.DEFAULT_CURSOR);
         }
 
     }

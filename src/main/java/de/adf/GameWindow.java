@@ -143,10 +143,8 @@ public class GameWindow extends JFrame {
         }
 
         public class Cell extends JButton {
-            private boolean hasShip = false;
-            private boolean gotShot = false;
-            private int x;
-            private int y;
+            private boolean hasShip, gotShot;
+            private int x, y;
 
             public Cell(int x, int y) {
                 super();
