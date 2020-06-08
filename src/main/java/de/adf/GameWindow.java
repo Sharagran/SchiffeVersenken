@@ -168,7 +168,7 @@ public class GameWindow extends JFrame {
                                 status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
                             }
                             else {
-                                if (gm.ready) {
+                                if (!gm.ready) {
                                     status_lbl.setText("Placing done, waiting for Client to be ready.");
                                 }
                                 else {
