@@ -338,22 +338,20 @@ public class GameWindow extends JFrame {
             // #endregion
 
             // #region schaut, ob Schiffe in der Nähe sind(horizontal & vertikal)
-
-            // TODO: besseren variablennamen als thisY & thisX finden
-            int thisY;
-            int thisX;
+            int shortEdge;
+            int longEdge;
             if (horizontal) {
-                thisY = y;
-                thisX = x;
+                shortEdge = y;
+                longEdge = x;
             } else {
-                thisY = x;
-                thisX = y;
+                shortEdge = x;
+                longEdge = y;
             }
 
             ArrayList<Coordinate> disabledCells = new ArrayList<>();
             int frameHorizontal = shipLenght;
-            for (int i = thisY - 1; i <= thisY + 1; i++) {
-                for (int j = thisX - 1; j <= thisX + shipLenght; j++) {
+            for (int i = shortEdge - 1; i <= shortEdge + 1; i++) {
+                for (int j = longEdge - 1; j <= longEdge + shipLenght; j++) {
                     if (i >= 0 && j >= 0 && i <= 9 && j <= 9) {
                         if (horizontal) {
                             frameHorizontal += localBoard.cells[j][i].hasShip ? 1 : 0;
