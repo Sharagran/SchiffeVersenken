@@ -10,4 +10,6 @@ interface GameManagerInterface extends Remote {
     public void done() throws RemoteException;
 
     public void initStub(String ip) throws RemoteException;
+
+    public void ready() throws RemoteException;
 }

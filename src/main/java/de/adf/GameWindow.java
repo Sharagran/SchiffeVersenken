@@ -18,7 +18,7 @@ public class GameWindow extends JFrame {
     int shipIndex = 0;
     int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
     private boolean prepare = true;
-    JLabel status_lbl = new JLabel("Status");
+    JLabel status_lbl;
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
@@ -51,6 +51,8 @@ public class GameWindow extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
+        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex]);
+        status_lbl.setFont(new Font(status_lbl.getName(), Font.PLAIN, 23));
         add(status_lbl, gbc);
 
         validate();
@@ -162,7 +164,19 @@ public class GameWindow extends JFrame {
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
-                                    remoteBoard.setEnabledAll(gm.yourturn); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                    remoteBoard.setEnabledAll((gm.yourturn && gm.ready)); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                }
+                            }
+
+                            if (shipIndex < ships.length) {
+                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
+                            }
+                            else {
+                                if (gm.ready) {
+                                    status_lbl.setText("Placing done, waiting for Client to be ready.");
+                                }
+                                else {
+                                    status_lbl.setText("Cient ready, begin game.");
                                 }
                             }
                         } else {
@@ -227,6 +241,7 @@ public class GameWindow extends JFrame {
         public GameManagerInterface remote;
         private boolean yourturn;
         public boolean isHost;
+        private boolean ready;
         private Registry reg;
 
         public GameManager(String ip) throws RemoteException {
@@ -368,6 +383,11 @@ public class GameWindow extends JFrame {
         public void done() {
             yourturn = !yourturn;
             remoteBoard.setEnabledAll(yourturn);
+        }
+
+        public void ready() {
+            ready = true;
+            status_lbl.setText("Cient ready, begin game.");
         }
         // #endregion
     }
