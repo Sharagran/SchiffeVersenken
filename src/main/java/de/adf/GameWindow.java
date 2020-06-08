@@ -87,8 +87,6 @@ public class GameWindow extends JFrame {
 
         public GameBoard() {
             setLayout(new GridLayout(11, 11));
-            // setPreferredSize(new Dimension(500, 500));
-
             generateBoard();
         }
 
@@ -97,14 +95,14 @@ public class GameWindow extends JFrame {
             JLabel empty = new JLabel();
             add(empty);
             for (int i = 1; i <= 10; i++) {
-                // Label Y axis (numbers)
+                // Label X axis (numbers)
                 JLabel number = new JLabel(Integer.toString(i));
                 number.setHorizontalAlignment(SwingConstants.CENTER);
                 add(number);
             }
 
             for (int i = 1; i < 11; i++) {
-                // Label X axis (letters)
+                // Label Y axis (letters)
                 JLabel letter = new JLabel(Character.toString(i + 64));
                 letter.setVerticalAlignment(SwingConstants.CENTER);
                 add(letter);
@@ -134,7 +132,7 @@ public class GameWindow extends JFrame {
             private Map<String, Color> colors = Map.of("background", Color.white, "hit", Color.red,
                     "background-disabled", Color.gray);
 
-            private boolean hasShip = false;// Math.random() > 0.5;
+            private boolean hasShip = false;
             private boolean gotShot = false;
             private int x;
             private int y;
@@ -191,7 +189,7 @@ public class GameWindow extends JFrame {
                             }
                         } else {
                             // Schießen
-                            gotShot = true; // local
+                            gotShot = true;
                             setEnabled(false);
                             try {
                                 System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + ","
