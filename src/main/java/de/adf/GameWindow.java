@@ -168,7 +168,6 @@ public class GameWindow extends JFrame {
                             try {
                                 System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y));
                                 hasShip = gm.remote.shoot(x, y);
-                                System.out.println("ShipHit: " + hasShip);
                                 repaint();
                                 if (!hasShip) {
                                     gm.done();
@@ -176,6 +175,15 @@ public class GameWindow extends JFrame {
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
+                        }
+                    }
+                });
+                addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseEntered(java.awt.event.MouseEvent evt) {
+                        if(prepare) {
+                            status_lbl.setText("Place ship in: " + Coordinate.toString(x, y));
+                        } else {
+                            status_lbl.setText("Shoot: " + Coordinate.toString(x, y));
                         }
                     }
                 });
@@ -277,7 +285,6 @@ public class GameWindow extends JFrame {
 
         // leftmost x, topmost y
         public boolean placeShip(int x, int y, int shipLenght, Boolean horizontal) {
-            System.out.println("--------PlaceShip: " + Coordinate.indexToYCoordinate(y) + "," + Coordinate.indexToXCoordinate(x) + "--------");
             // #region Out of bound check
             // shipLenght-1 da startfeld mitgezählt werden muss
             if (horizontal) {
@@ -352,14 +359,13 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
 
-            System.out.println(Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y) + "\tshipHit: " + shipHit);
+            System.out.println(Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y) + "\tgot shot");
 
             localBoard.cells[x][y].repaint();
             return shipHit;
         }
 
         public boolean isLost() throws RemoteException {
-            System.out.println("ausgeführt"); // TODO: Debug
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     if (localBoard.cells[i][j].hasShip && localBoard.cells[i][j].gotShot == false)
@@ -371,6 +377,20 @@ public class GameWindow extends JFrame {
         }
 
         public void done() {
+            try {
+                if(isLost()) {
+                    localBoard.setEnabledAll(false);
+                    remoteBoard.setEnabledAll(false);
+
+                    // UnicastRemoteObject.unexportObject(gm.reg, true);
+                    JOptionPane.showMessageDialog(null, "infoMessage",  "titleBar", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (Exception e) {
+                //TODO: handle exception
+            }
+            
+
+            //Change turn
             yourturn = !yourturn;
             remoteBoard.setEnabledAll(yourturn);
         }

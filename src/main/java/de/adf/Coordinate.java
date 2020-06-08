@@ -16,4 +16,12 @@ public class Coordinate {
     static public char indexToYCoordinate(int i) {
         return (char) (i + 65);
     }
+
+    static public String toString(int x, int y) {
+        return String.format("%s|%s", indexToXCoordinate(x), indexToYCoordinate(y));
+    }
+
+    public String toString() {
+        return String.format("%s|%s", indexToXCoordinate(x), indexToYCoordinate(y));
+    }
 }
