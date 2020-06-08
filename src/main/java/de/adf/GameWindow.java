@@ -18,7 +18,7 @@ public class GameWindow extends JFrame {
     int shipIndex = 0;
     int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
     private boolean prepare = true;
-    JLabel status_lbl = new JLabel("Status");
+    JLabel status_lbl;
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
@@ -51,6 +51,8 @@ public class GameWindow extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
+        status_lbl = new JLabel("Platziere Schiff in größe " + ships[shipIndex]);
+        status_lbl.setFont(new Font(status_lbl.getName(), Font.PLAIN, 23));
         add(status_lbl, gbc);
 
         validate();
@@ -158,7 +160,35 @@ public class GameWindow extends JFrame {
                                 if (shipIndex >= ships.length) {
                                     prepare = false;
                                     localBoard.setEnabledAll(false);
-                                    remoteBoard.setEnabledAll(gm.yourturn); //FIXME: spieler kann schon schießen wenn der gegner noch nicht fertig ist mit preperation, lösung: ready() rmi methode
+                                    try {
+                                        if (gm.isHost) {
+                                            gm.remote.ready();
+                                        }
+                                        else {
+                                            remoteBoard.setEnabledAll(false);
+                                        }
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+
+                            if (shipIndex < ships.length) {
+                                status_lbl.setText("Platziere Schiff in größe " + ships[shipIndex]);
+                            }
+                            else {
+                                gm.ready = true;
+                                if (!gm.remReady) {
+                                    if (!gm.isHost) {
+                                        status_lbl.setText("Placing done, waiting for Host to be ready.");
+                                    }
+                                    else {
+                                        status_lbl.setText("Begin game.");
+                                    }
+                                }
+                                else {
+                                    status_lbl.setText("Host ready, begin game.");
+                                    remoteBoard.setEnabledAll(gm.remReady);
                                 }
                             }
                         } else {
@@ -168,6 +198,9 @@ public class GameWindow extends JFrame {
                             try {
                                 System.out.println("Shooting: " + Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y));
                                 hasShip = gm.remote.shoot(x, y);
+                                
+                                status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "]" + (hasShip ? " hit." : " miss."));
+                                
                                 repaint();
                                 if (!hasShip) {
                                     gm.done();
@@ -231,6 +264,8 @@ public class GameWindow extends JFrame {
         public GameManagerInterface remote;
         private boolean yourturn;
         public boolean isHost;
+        private boolean remReady;
+        private boolean ready;
         private Registry reg;
 
         public GameManager(String ip) throws RemoteException {
@@ -359,6 +394,7 @@ public class GameWindow extends JFrame {
             if (!shipHit)
                 done();
 
+            status_lbl.setText("[" + Coordinate.indexToXCoordinate(x) + " , " + Coordinate.indexToYCoordinate(y) + "] Enemy" +(shipHit ? " hit." : " miss."));
             System.out.println(Coordinate.indexToXCoordinate(x) + "," + Coordinate.indexToYCoordinate(y) + "\tgot shot");
 
             localBoard.cells[x][y].repaint();
@@ -393,6 +429,15 @@ public class GameWindow extends JFrame {
             //Change turn
             yourturn = !yourturn;
             remoteBoard.setEnabledAll(yourturn);
+        }
+
+        public void ready() {
+            gm.remReady = true;
+            status_lbl.setText("Host ready, begin game.");
+
+            if (gm.ready) {
+                remoteBoard.setEnabledAll(true);
+            }
         }
         // #endregion
     }
