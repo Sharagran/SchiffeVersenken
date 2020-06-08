@@ -15,11 +15,14 @@ public class GameWindow extends JFrame {
 
     GameManager gm;
     GameBoard localBoard, remoteBoard;
+    int shipIndex = 0;
+    int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
+    private boolean prepare = true;
 
     public GameWindow(String ip) throws RemoteException {
         setTitle("Schiffe versenken");
         setSize(Settings.SCREENWIDTH, Settings.SCREENHEIGHT);
-        setResizable(true); // FIXME: debug only (set to false)
+        setResizable(true); // TODO: debug only (set to false)
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -47,7 +50,7 @@ public class GameWindow extends JFrame {
         repaint();
     }
 
-    public char indexToCoordinate(int i) { // FIXME: debug only
+    public char indexToCoordinate(int i) { // TODO: debug only
         return (char) (i + 65);
     }
 
@@ -79,9 +82,6 @@ public class GameWindow extends JFrame {
     public class GameBoard extends JPanel {
 
         public Cell[][] cells = new Cell[10][10];
-        int shipIndex = 0;
-        int[] ships = new int[] { 4, 3, 3, 2, 2, 2, 1, 1, 1, 1 };
-        private boolean prepare = true;
 
         public GameBoard() {
             setLayout(new GridLayout(11, 11));
@@ -288,7 +288,7 @@ public class GameWindow extends JFrame {
 
             // #region schaut, ob Schiffe in der Nähe sind(horizontal & vertikal)
 
-            // FIXME: besseren variablennamen als thisY & thisX finden
+            // TODO: besseren variablennamen als thisY & thisX finden
             int thisY;
             int thisX;
             if (horizontal) {
@@ -299,6 +299,7 @@ public class GameWindow extends JFrame {
                 thisX = y;
             }
 
+            //FIXME: schiffe können ineinander laufen (neues schiff links von einem alten platzieren bzw. über einen wenn vertikal)
             for (int i = thisY - 1; i <= thisY + 1; i++) {
                 for (int j = thisX - 1; j <= thisX + shipLenght; j++) {
                     if (i >= 0 && j >= 0 && i <= 9 && j <= 9) {
@@ -346,7 +347,7 @@ public class GameWindow extends JFrame {
         }
 
         public boolean isLost() throws RemoteException {
-            System.out.println("ausgeführt"); // FIXME: Debug
+            System.out.println("ausgeführt"); // TODO: Debug
             for (int i = 0; i < 10; i++) {
                 for (int j = 0; j < 10; j++) {
                     if (localBoard.cells[i][j].hasShip && localBoard.cells[i][j].gotShot == false)
