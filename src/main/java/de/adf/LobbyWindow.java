@@ -164,6 +164,7 @@ public class LobbyWindow extends JFrame {
      * 
      * @param host Zu prüfende Adresse.
      * @param port Zu prüfender Port.
+     * @return true = server hört.; false = server nicht erreichbar.
      */
     public boolean serverListening(String host, int port) {
         Socket s = null;

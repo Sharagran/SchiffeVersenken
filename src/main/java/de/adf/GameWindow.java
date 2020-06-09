@@ -86,6 +86,8 @@ public class GameWindow extends JFrame {
 
     /**
      * Wird aufgerufen wenn der Horizontal/Vertikal button gedrückt wird
+     * 
+     * @param e Eventarg des Buttons
      */
     private void changeClicked(ActionEvent e) {
         placeHorizontal = !placeHorizontal;
@@ -93,7 +95,10 @@ public class GameWindow extends JFrame {
     }
 
     /**
-     * TODO: DANIEL
+     * Findet die Lokale Adresse an hand von der Adresse, mit der er verbunden wird.
+     * 
+     * @param remoteip IP des Verbundenen.
+     * @return Gibt die Lokale Adresse zurück.
      */
     public String getLocalAddress(String remoteip) {
         ArrayList<String> localAddresses = new ArrayList<String>();
@@ -329,7 +334,8 @@ public class GameWindow extends JFrame {
         public boolean isHost;
 
         /**
-        * Erzeugt den GameManager und verbindet sich mit dem Server
+        * Erzeugt den GameManager und verbindet sich mit dem Server.
+        *
         * @param ip Server IP
         */
         public GameManager(String ip) throws RemoteException {
@@ -370,6 +376,7 @@ public class GameWindow extends JFrame {
 
         /**
         * Verbindet sich mit dem Server
+        *
         * @param ip Server IP
         */
         public void initStub(String ip) throws RemoteException {
@@ -385,6 +392,7 @@ public class GameWindow extends JFrame {
 
         /**
         * Überprüft ob ein Schiff platziert werden kann und platziert diesen wenn möglich
+        *
         * @param x Linke Position des Schiffs (left)
         * @param y Obere Position des Schiffs (top)
         * @param shipLenght Länge des Schiffs
@@ -446,6 +454,7 @@ public class GameWindow extends JFrame {
 
         /**
         * Platziert alle Schiffteile
+        *
         * @param x Linke Position des Schiffs (left)
         * @param y Obere Position des Schiffs (top)
         * @param shipLenght Länge des Schiffs
@@ -464,6 +473,9 @@ public class GameWindow extends JFrame {
 
         /**
         * Platziert ein Schiffsteil an der angegebenen Koordinate
+        * 
+        * @param x Koordinate x auf dem feld
+        * @param y Koordinate y auf dem feld
         */
         private void placeShipPart(int x, int y) {
             localBoard.cells[x][y].hasShip = true;
@@ -472,6 +484,7 @@ public class GameWindow extends JFrame {
 
         /**
         * Spiel vorbei
+        *
         * @param win True = Gewonnen/False = Verloren
         */
         private void gameOver(boolean win) {
@@ -494,6 +507,9 @@ public class GameWindow extends JFrame {
         // #region Remote methods
         /**
         * Schießt auf die übergebenen Koordinaten und gibt an den Client zurück ob ein Schiff getroffen wurde
+        *
+        * @param x Koordinate x auf dem feld
+        * @param y Koordinate y auf dem feld
         * @return True = Schiff getroffen
         */
         public boolean shoot(int x, int y) throws RemoteException {
@@ -520,6 +536,7 @@ public class GameWindow extends JFrame {
 
         /**
         * Überprüft ob das Spiel verloren ist und gibt die Antwort an den Client zurück
+        *
         * @return True = Verloren / Spiel vorbei
         */
         public boolean isLost() throws RemoteException {
