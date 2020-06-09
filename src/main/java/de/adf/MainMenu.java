@@ -21,7 +21,7 @@ public class MainMenu extends JFrame {
         // Hintergrundbild
         JLabel backgroundImage;
         ImageIcon iconShips;
-        iconShips = new ImageIcon("resources/background.png");
+        iconShips = new ImageIcon(getClass().getResource("background.png"));
         backgroundImage = new JLabel(iconShips);
         backgroundImage.setBounds(0, 0, 1000, 562);
         add(backgroundImage);
