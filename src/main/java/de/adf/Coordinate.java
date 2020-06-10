@@ -21,7 +21,7 @@ public class Coordinate {
      */
     static public int indexToXCoordinate(int index) {
         index = (index % 10) + 1; // 1-10
-        return index+1;
+        return index;
     }
 
     /**
